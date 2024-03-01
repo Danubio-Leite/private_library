@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:private_library/components/custom_appbar.dart';
+import 'package:private_library/pages/add_book_page.dart';
+import 'package:private_library/pages/my_books_page.dart';
 
 import '../components/custom_home_button.dart';
 import 'contact.dart';
@@ -12,7 +14,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       // backgroundColor: const Color.fromARGB(255, 139, 107, 88),
       appBar: CustomAppBar(
-        title: 'Biblioteca Particular',
+        title: 'Minha Biblioteca',
       ),
       body: Stack(
         children: [
@@ -24,12 +26,26 @@ class HomePage extends StatelessWidget {
               CustomHomeButton(
                 imagePath: 'assets/images/icons/reading.png',
                 buttonText: 'Adicionar Livro',
-                onPressed: null,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AddBookPage(),
+                    ),
+                  );
+                },
               ),
               CustomHomeButton(
                 imagePath: 'assets/images/icons/binder.png',
                 buttonText: 'Meus Livros',
-                onPressed: null,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MyBooksPage(),
+                    ),
+                  );
+                },
               ),
               CustomHomeButton(
                 imagePath: 'assets/images/icons/online-shopping.png',
