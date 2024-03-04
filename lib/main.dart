@@ -1,21 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'i18n/app_localizations.dart';
 import 'pages/home_page.dart';
 
 void main() {
-  runApp(const MaterialApp(
-    localizationsDelegates: [
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-    ],
-    supportedLocales: [
-      Locale('en', ''),
-      Locale('pt', ''),
-      Locale('es', ''),
-    ],
-    home: MyApp(),
-  ));
+  runApp(
+    const MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -26,6 +18,15 @@ class MyApp extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return MaterialApp(
+      localizationsDelegates: const [
+        AppLocalizations.delegate, // Add AppLocalizations delegate
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', ''), // English
+        Locale('pt', ''), // Portuguese
+      ],
       theme: ThemeData(
         textTheme: GoogleFonts.latoTextTheme(textTheme).copyWith(
           bodyMedium:
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.brown)
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green)
             .copyWith(background: const Color.fromARGB(255, 255, 226, 209)),
         useMaterial3: true,
       ),

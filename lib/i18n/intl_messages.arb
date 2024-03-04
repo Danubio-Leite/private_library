@@ -1,0 +1,46 @@
+{
+  "@@last_modified": "2024-03-04T08:42:32.262497",
+  "@@locale": "en",
+  "title": "My Library",
+  "@title": {
+    "description": "The application title",
+    "type": "text",
+    "placeholders": {}
+  },
+  "addBook": "Add Book",
+  "@addBook": {
+    "description": "The button to add a book",
+    "type": "text",
+    "placeholders": {}
+  },
+  "myBooks": "My Books",
+  "@myBooks": {
+    "description": "The button to see the user's books",
+    "type": "text",
+    "placeholders": {}
+  },
+  "wishList": "Wish List",
+  "@wishList": {
+    "description": "The button to see the user's wish list",
+    "type": "text",
+    "placeholders": {}
+  },
+  "loans": "Loans",
+  "@loans": {
+    "description": "The button to see the user's loans",
+    "type": "text",
+    "placeholders": {}
+  },
+  "contact": "Contact",
+  "@contact": {
+    "description": "The button to contact the developer team",
+    "type": "text",
+    "placeholders": {}
+  },
+  "aboutApp": "About the App",
+  "@aboutApp": {
+    "description": "The button to see the app information",
+    "type": "text",
+    "placeholders": {}
+  }
+}

@@ -5,6 +5,8 @@ import 'package:private_library/pages/my_books_page.dart';
 
 import '../components/custom_home_button.dart';
 import 'contact.dart';
+import '../i18n/app_localizations.dart';
+import 'loans_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -14,7 +16,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       // backgroundColor: const Color.fromARGB(255, 139, 107, 88),
       appBar: CustomAppBar(
-        title: 'Minha Biblioteca',
+        title: Localizations.of(context, AppLocalizations).title,
       ),
       body: Stack(
         children: [
@@ -25,7 +27,7 @@ class HomePage extends StatelessWidget {
             children: [
               CustomHomeButton(
                 imagePath: 'assets/images/icons/reading.png',
-                buttonText: 'Adicionar Livro',
+                buttonText: Localizations.of(context, AppLocalizations).addBook,
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -37,7 +39,7 @@ class HomePage extends StatelessWidget {
               ),
               CustomHomeButton(
                 imagePath: 'assets/images/icons/binder.png',
-                buttonText: 'Meus Livros',
+                buttonText: Localizations.of(context, AppLocalizations).myBooks,
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -49,17 +51,25 @@ class HomePage extends StatelessWidget {
               ),
               CustomHomeButton(
                 imagePath: 'assets/images/icons/online-shopping.png',
-                buttonText: 'Lista de Desejos',
+                buttonText:
+                    Localizations.of(context, AppLocalizations).wishList,
                 onPressed: null,
               ),
               CustomHomeButton(
                 imagePath: 'assets/images/icons/notebook.png',
-                buttonText: 'Empréstimos',
-                onPressed: null,
+                buttonText: Localizations.of(context, AppLocalizations).loans,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoanPage(),
+                    ),
+                  );
+                },
               ),
               CustomHomeButton(
                 imagePath: 'assets/images/icons/library.png',
-                buttonText: 'Fale Conosco',
+                buttonText: Localizations.of(context, AppLocalizations).contact,
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -71,7 +81,8 @@ class HomePage extends StatelessWidget {
               ),
               CustomHomeButton(
                 imagePath: 'assets/images/icons/ebook.png',
-                buttonText: 'Sobre o App',
+                buttonText:
+                    Localizations.of(context, AppLocalizations).aboutApp,
                 onPressed: null,
               ),
             ],

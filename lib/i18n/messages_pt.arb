@@ -1,0 +1,46 @@
+{
+  "@@last_modified": "2024-03-04T08:42:32.262497",
+  "@@locale": "pt",
+  "title": "Minha Biblioteca",
+  "@title": {
+    "description": "The application title",
+    "type": "text",
+    "placeholders": {}
+  },
+  "addBook": "Adicionar Livro",
+  "@addBook": {
+    "description": "The button to add a book",
+    "type": "text",
+    "placeholders": {}
+  },
+  "myBooks": "Meus Livros",
+  "@myBooks": {
+    "description": "The button to see the user's books",
+    "type": "text",
+    "placeholders": {}
+  },
+  "wishList": "Lista de Desejos",
+  "@wishList": {
+    "description": "The button to see the user's wish list",
+    "type": "text",
+    "placeholders": {}
+  },
+  "loans": "Empréstimos",
+  "@loans": {
+    "description": "The button to see the user's loans",
+    "type": "text",
+    "placeholders": {}
+  },
+  "contact": "Fale Conosco",
+  "@contact": {
+    "description": "The button to contact the developer team",
+    "type": "text",
+    "placeholders": {}
+  },
+  "aboutApp": "Sobre o App",
+  "@aboutApp": {
+    "description": "The button to see the app information",
+    "type": "text",
+    "placeholders": {}
+  }
+}
