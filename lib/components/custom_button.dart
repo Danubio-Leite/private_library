@@ -5,6 +5,7 @@ class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
   final Color? backgroundColor;
   final EdgeInsets? padding;
+  final Icon? icon;
 
   const CustomButton({
     Key? key,
@@ -12,11 +13,16 @@ class CustomButton extends StatelessWidget {
     required this.onPressed,
     this.backgroundColor,
     this.padding,
+    this.icon,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return ElevatedButton.icon(
+      icon: icon ??
+          const SizedBox(
+            width: 0,
+          ),
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor:
@@ -26,12 +32,18 @@ class CustomButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
       ),
-      child: Text(
-        texto,
-        style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 53, 53, 53)),
+      label: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            texto,
+            style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 53, 53, 53)),
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
     );
   }

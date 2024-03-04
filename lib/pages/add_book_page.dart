@@ -42,44 +42,56 @@ class _AddBookPageState extends State<AddBookPage> {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  SizedBox(
-                    child: CustomButton(
-                      texto: 'Buscar',
-                      onPressed: () async {
-                        final details =
-                            await fetchBookDetails(isbnController.text);
-                        if (details != null &&
-                            details['items'] != null &&
-                            details['items'].length > 0) {
-                          var bookDetails = details['items'][0]['volumeInfo'];
-                          if (bookDetails != null) {
-                            titleController.text = bookDetails['title'] ?? '';
-                            subtitleController.text =
-                                bookDetails['subtitle'] ?? '';
-                            authorController.text =
-                                bookDetails['authors'] != null
-                                    ? bookDetails['authors'][0]
-                                    : '';
-                            publisherController.text =
-                                bookDetails['publisher'] ?? '';
-                            genreController.text =
-                                bookDetails['categories'] != null
-                                    ? bookDetails['categories'][0]
-                                    : '';
-                            yearController.text =
-                                bookDetails['publishedDate'] != null
-                                    ? bookDetails['publishedDate']
-                                        .substring(0, 4)
-                                    : '';
-                            synopsisController.text =
-                                bookDetails['description'] ?? '';
-                          } else {
-                            // Trate o caso em que os detalhes do livro não estão disponíveis
-                          }
-                        }
-                      },
+                  CustomButton(
+                    icon: const Icon(
+                      Icons.search,
+                      size: 28,
+                      color: Colors.black,
                     ),
+                    texto: '',
+                    onPressed: () async {
+                      final details =
+                          await fetchBookDetails(isbnController.text);
+                      if (details != null &&
+                          details['items'] != null &&
+                          details['items'].length > 0) {
+                        var bookDetails = details['items'][0]['volumeInfo'];
+                        if (bookDetails != null) {
+                          titleController.text = bookDetails['title'] ?? '';
+                          subtitleController.text =
+                              bookDetails['subtitle'] ?? '';
+                          authorController.text = bookDetails['authors'] != null
+                              ? bookDetails['authors'][0]
+                              : '';
+                          publisherController.text =
+                              bookDetails['publisher'] ?? '';
+                          genreController.text =
+                              bookDetails['categories'] != null
+                                  ? bookDetails['categories'][0]
+                                  : '';
+                          yearController.text =
+                              bookDetails['publishedDate'] != null
+                                  ? bookDetails['publishedDate'].substring(0, 4)
+                                  : '';
+                          synopsisController.text =
+                              bookDetails['description'] ?? '';
+                        } else {
+                          // Trate o caso em que os detalhes do livro não estão disponíveis
+                        }
+                      }
+                    },
                   ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  CustomButton(
+                      icon: const Icon(
+                        Icons.camera_alt_outlined,
+                        size: 28,
+                        color: Colors.black,
+                      ),
+                      texto: '',
+                      onPressed: () {})
                 ],
               ),
               const SizedBox(height: 8),
@@ -106,7 +118,6 @@ class _AddBookPageState extends State<AddBookPage> {
               Row(
                 children: [
                   Flexible(
-                    flex: 2,
                     child: CustomFormField(
                       controller: genreController,
                       label: 'Gênero',
