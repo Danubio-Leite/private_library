@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:private_library/components/custom_appbar.dart';
 import 'package:private_library/pages/add_book_page.dart';
-import 'package:private_library/pages/my_books_page.dart';
+import 'package:private_library/pages/my_books_pages.dart/my_books_page.dart';
 
 import '../components/custom_home_button.dart';
 import 'contact.dart';
@@ -23,7 +23,7 @@ class HomePage extends StatelessWidget {
           ListView(
             primary: false,
             padding:
-                const EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 72),
+                const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 72),
             children: [
               CustomHomeButton(
                 imagePath: 'assets/images/icons/reading.png',

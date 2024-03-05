@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
+import 'helpers/DatabaseHelper.dart';
 import 'i18n/app_localizations.dart';
 import 'pages/home_page.dart';
 
 void main() {
   runApp(
-    const MyApp(),
+    ChangeNotifierProvider(
+      create: (context) => DatabaseHelper(),
+      child: const MyApp(),
+    ),
   );
 }
 

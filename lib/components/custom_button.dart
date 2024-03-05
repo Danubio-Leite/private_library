@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
-  final String texto;
+  final String? texto;
   final VoidCallback onPressed;
   final Color? backgroundColor;
   final EdgeInsets? padding;
-  final Icon? icon;
+  final IconData? icon;
 
   const CustomButton({
     Key? key,
-    required this.texto,
+    this.texto,
     required this.onPressed,
     this.backgroundColor,
     this.padding,
@@ -18,11 +18,7 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      icon: icon ??
-          const SizedBox(
-            width: 0,
-          ),
+    return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor:
@@ -32,19 +28,30 @@ class CustomButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
       ),
-      label: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+      child: icon != null
+          ? Row(
+              children: [
+                Icon(icon, color: Colors.black, size: 26),
+              ],
+            )
+          :
+          // ignore: prefer_const_constructors
           Text(
-            texto,
-            style: const TextStyle(
+              texto!,
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 53, 53, 53)),
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
+                color: Color.fromARGB(255, 53, 53, 53),
+              ),
+            ),
+
+      // Text(
+      //   texto,
+      //   style: const TextStyle(
+      //       fontSize: 16,
+      //       fontWeight: FontWeight.bold,
+      //       color: Color.fromARGB(255, 53, 53, 53)),
+      // ),
     );
   }
 }
