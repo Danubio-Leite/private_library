@@ -23,8 +23,8 @@ class BookDetailsPage extends StatelessWidget {
             children: [
               if (book.cover != null && book.cover!.isNotEmpty)
                 Center(
-                  child: Image.file(
-                    File(book.cover!),
+                  child: Image.memory(
+                    base64Decode(book.cover!),
                     height: 200,
                   ),
                 ),

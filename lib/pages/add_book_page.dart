@@ -6,9 +6,9 @@ import 'package:private_library/components/custom_button.dart';
 import 'package:provider/provider.dart';
 import '../components/custom_textformfield.dart';
 import 'package:http/http.dart' as http;
-
 import '../helpers/DatabaseHelper.dart';
 import '../models/book_model.dart';
+import 'dart:ui' as ui;
 
 class AddBookPage extends StatefulWidget {
   const AddBookPage({super.key});
@@ -18,6 +18,7 @@ class AddBookPage extends StatefulWidget {
 }
 
 class _AddBookPageState extends State<AddBookPage> {
+  final GlobalKey _globalKey = GlobalKey();
   final isbnController = TextEditingController();
   final titleController = TextEditingController();
   final authorController = TextEditingController();
@@ -150,6 +151,12 @@ class _AddBookPageState extends State<AddBookPage> {
                   onPressed: () async {
                     String coverPath =
                         await fetchImageAndSave(isbnController.text);
+
+                    List<int> imageBytes =
+                        await File(coverPath).readAsBytesSync();
+
+// Codificando a lista de bytes em uma string base64
+                    String base64Image = base64Encode(imageBytes);
                     final book = Book(
                       id: DateTime.now().millisecondsSinceEpoch,
                       isbn: isbnController.text,
@@ -160,7 +167,7 @@ class _AddBookPageState extends State<AddBookPage> {
                       publishedDate: publishedDateController.text,
                       synopsis: synopsisController.text,
                       subtitle: subtitleController.text,
-                      cover: coverPath,
+                      cover: base64Image,
                     );
                     Provider.of<DatabaseHelper>(context, listen: false)
                         .saveBook(book);
@@ -188,7 +195,7 @@ class _AddBookPageState extends State<AddBookPage> {
 
   Future<String> fetchImageAndSave(String isbn) async {
     final response = await http.get(Uri.parse(
-        'https://www.googleapis.com/customsearch/v1?key=AIzaSyBxvANHBwoEozEy-iq8DD1uiE7Gjv5fIA0&cx=62bc68a176da64dd5&searchType=image&q=isbn%209781461492986%20book%20cover'));
+        'https://www.googleapis.com/customsearch/v1?key=AIzaSyBxvANHBwoEozEy-iq8DD1uiE7Gjv5fIA0&cx=62bc68a176da64dd5&searchType=image&q=isbn%20$isbn%20book%20cover'));
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
@@ -218,10 +225,42 @@ class _AddBookPageState extends State<AddBookPage> {
         }
       } else {
         print('Nenhum item encontrado na resposta da API.');
-        throw Exception('No items found in API response');
+        return await coverPlaceholder(titleController.text);
       }
     } else {
       throw Exception('Failed to load image details');
+    }
+  }
+
+  Future<String> coverPlaceholder(String bookTitle) async {
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
+    final paint = Paint()..color = Colors.white;
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: bookTitle,
+        style: const TextStyle(color: Colors.black, fontSize: 16.0),
+      ),
+      maxLines: 2,
+      textAlign: TextAlign.center,
+      textDirection: TextDirection.ltr,
+    );
+
+    textPainter.layout(maxWidth: 120);
+
+    canvas.drawRect(const Rect.fromLTWH(0, 0, 120, 180), paint);
+    textPainter.paint(canvas,
+        Offset((120 - textPainter.width) / 2, (180 - textPainter.height) / 2));
+
+    final img = await recorder.endRecording().toImage(120, 180);
+    final data = await img.toByteData(format: ui.ImageByteFormat.png);
+
+    if (data != null) {
+      // Codificando os bytes da imagem em uma string base64
+      String base64Image = base64Encode(data.buffer.asUint8List());
+      return base64Image;
+    } else {
+      throw Exception('Failed to convert image to byte data');
     }
   }
 }
