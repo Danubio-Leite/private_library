@@ -6,7 +6,7 @@ import 'package:private_library/components/custom_button.dart';
 import 'package:provider/provider.dart';
 import '../components/custom_textformfield.dart';
 import 'package:http/http.dart' as http;
-import '../helpers/DatabaseHelper.dart';
+import '../helpers/book_db_helper.dart';
 import '../models/book_model.dart';
 import 'dart:ui' as ui;
 
@@ -169,7 +169,7 @@ class _AddBookPageState extends State<AddBookPage> {
                       subtitle: subtitleController.text,
                       cover: base64Image,
                     );
-                    Provider.of<DatabaseHelper>(context, listen: false)
+                    Provider.of<BookDbHelper>(context, listen: false)
                         .saveBook(book);
                     Navigator.pop(context);
                   },

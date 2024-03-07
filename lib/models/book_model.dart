@@ -52,4 +52,24 @@ class Book {
       'cover': cover,
     };
   }
+
+  factory Book.fromMap(Map<String, dynamic> map) {
+    return Book(
+      id: map['id'],
+      isbn: map['isbn'],
+      title: map['title'],
+      author: map['author'],
+      publisher: map['publisher'],
+      genre: map['genre'],
+      publishedDate: map['publishedDate'],
+      synopsis: map['synopsis'],
+      subtitle: map['subtitle'],
+      shelf: map['shelf'],
+      loanDate: map['loanDate'],
+      returnDate: map['returnDate'],
+      loanUserId: map['loanUserId'],
+      format: map['format'],
+      cover: map['cover'],
+    );
+  }
 }

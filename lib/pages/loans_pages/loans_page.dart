@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../components/custom_home_button.dart';
+import '../../components/custom_home_button.dart';
 
 class LoanPage extends StatelessWidget {
   const LoanPage({super.key});

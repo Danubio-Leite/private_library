@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../helpers/DatabaseHelper.dart';
+import '../../helpers/book_db_helper.dart';
 import '../../models/book_model.dart';
 import 'book_details_page.dart';
 
@@ -20,8 +20,7 @@ class _MyBooksPageState extends State<MyBooksPage> {
           title: const Text('Meus Livros'),
         ),
         body: FutureBuilder<List<Book>>(
-          future:
-              Provider.of<DatabaseHelper>(context, listen: false).getBooks(),
+          future: Provider.of<BookDbHelper>(context, listen: false).getBooks(),
           builder: (BuildContext context, AsyncSnapshot<List<Book>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());

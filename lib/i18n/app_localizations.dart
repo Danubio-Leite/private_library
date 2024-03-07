@@ -12,9 +12,8 @@ class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
 
   @override
   Future<AppLocalizations> load(Locale locale) {
-    return SynchronousFuture<AppLocalizations>(locale.languageCode == 'pt'
-        ? Portuguese() as AppLocalizations
-        : English() as AppLocalizations);
+    return SynchronousFuture<AppLocalizations>(
+        locale.languageCode == 'pt' ? Portuguese() : English());
   }
 
   @override

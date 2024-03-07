@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io' as io;
 import 'dart:async';
 import '../models/book_model.dart';
 import 'package:path/path.dart';
 
-class DatabaseHelper extends ChangeNotifier {
-  static final _databaseName = "indices.db";
-  static final _databaseVersion = 1;
-  static final DatabaseHelper _instance = new DatabaseHelper.internal();
-  factory DatabaseHelper() => _instance;
+class BookDbHelper extends ChangeNotifier {
+  static const _databaseName = "indices.db";
+  static const _databaseVersion = 1;
+  static final BookDbHelper _instance = BookDbHelper.internal();
+  factory BookDbHelper() => _instance;
   static Database? _db;
 
   // torna a classe singleton
-  DatabaseHelper._privateConstructor();
-  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
+  BookDbHelper._privateConstructor();
+  static final BookDbHelper instance = BookDbHelper._privateConstructor();
 
   // tem somente uma referência ao banco de dados
   static Database? _database;
@@ -31,7 +29,7 @@ class DatabaseHelper extends ChangeNotifier {
     return _db!;
   }
 
-  DatabaseHelper.internal();
+  BookDbHelper.internal();
 
   setDB() async {
     String path = join(await getDatabasesPath(), _databaseName);
@@ -55,7 +53,7 @@ class DatabaseHelper extends ChangeNotifier {
     List<Map> list = await dbClient.rawQuery('SELECT * FROM Book');
     List<Book> books = List<Book>.empty(growable: true);
     for (int i = 0; i < list.length; i++) {
-      var book = new Book(
+      var book = Book(
         id: list[i]["id"],
         isbn: list[i]["isbn"],
         title: list[i]["title"],

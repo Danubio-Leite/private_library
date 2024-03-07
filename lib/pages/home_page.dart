@@ -6,7 +6,7 @@ import 'package:private_library/pages/my_books_pages.dart/my_books_page.dart';
 import '../components/custom_home_button.dart';
 import 'contact.dart';
 import '../i18n/app_localizations.dart';
-import 'loans_page.dart';
+import 'loans_pages/loans_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
