@@ -26,7 +26,7 @@ class HomePage extends StatelessWidget {
                 const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 72),
             children: [
               CustomHomeButton(
-                imagePath: 'assets/images/icons/reading.png',
+                imagePath: 'assets/images/icons/add-book.png',
                 buttonText: Localizations.of(context, AppLocalizations).addBook,
                 onPressed: () {
                   Navigator.push(
@@ -38,7 +38,7 @@ class HomePage extends StatelessWidget {
                 },
               ),
               CustomHomeButton(
-                imagePath: 'assets/images/icons/binder.png',
+                imagePath: 'assets/images/icons/bookshelf.png',
                 buttonText: Localizations.of(context, AppLocalizations).myBooks,
                 onPressed: () {
                   Navigator.push(
@@ -50,13 +50,13 @@ class HomePage extends StatelessWidget {
                 },
               ),
               CustomHomeButton(
-                imagePath: 'assets/images/icons/online-shopping.png',
+                imagePath: 'assets/images/icons/trolley.png',
                 buttonText:
                     Localizations.of(context, AppLocalizations).wishList,
                 onPressed: null,
               ),
               CustomHomeButton(
-                imagePath: 'assets/images/icons/notebook.png',
+                imagePath: 'assets/images/icons/hand-book.png',
                 buttonText: Localizations.of(context, AppLocalizations).loans,
                 onPressed: () {
                   Navigator.push(
@@ -68,7 +68,7 @@ class HomePage extends StatelessWidget {
                 },
               ),
               CustomHomeButton(
-                imagePath: 'assets/images/icons/library.png',
+                imagePath: 'assets/images/icons/signage.png',
                 buttonText: Localizations.of(context, AppLocalizations).contact,
                 onPressed: () {
                   Navigator.push(
@@ -80,7 +80,7 @@ class HomePage extends StatelessWidget {
                 },
               ),
               CustomHomeButton(
-                imagePath: 'assets/images/icons/ebook.png',
+                imagePath: 'assets/images/icons/smartphone.png',
                 buttonText:
                     Localizations.of(context, AppLocalizations).aboutApp,
                 onPressed: null,

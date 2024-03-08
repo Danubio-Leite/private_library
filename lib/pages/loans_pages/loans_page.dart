@@ -17,17 +17,17 @@ class LoanPage extends StatelessWidget {
             const EdgeInsets.only(left: 15, right: 15, top: 15, bottom: 72),
         children: [
           CustomHomeButton(
-            imagePath: 'assets/images/icons/binder.png',
+            imagePath: 'assets/images/icons/book.png',
             buttonText: 'Lend Book',
             onPressed: () {},
           ),
           CustomHomeButton(
-            imagePath: 'assets/images/icons/binder.png',
+            imagePath: 'assets/images/icons/books.png',
             buttonText: 'Borrowed books',
             onPressed: () {},
           ),
           CustomHomeButton(
-            imagePath: 'assets/images/icons/reading.png',
+            imagePath: 'assets/images/icons/notebook.png',
             buttonText: 'Users',
             onPressed: () {},
           ),
