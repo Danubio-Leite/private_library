@@ -45,6 +45,7 @@ class BookDbHelper extends ChangeNotifier {
   Future<int> saveBook(Book book) async {
     var dbClient = await db;
     int res = await dbClient.insert("Book", book.toMap());
+    notifyListeners();
     return res;
   }
 

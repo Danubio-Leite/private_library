@@ -32,6 +32,7 @@ class UserDbHelper extends ChangeNotifier {
   Future<int> saveUser(User user) async {
     var dbClient = await db;
     int res = await dbClient.insert("User", user.toMap());
+    notifyListeners();
     return res;
   }
 
@@ -49,5 +50,13 @@ class UserDbHelper extends ChangeNotifier {
       users.add(user);
     }
     return users;
+  }
+
+  Future<int> deleteUser(User user) async {
+    var dbClient = await db;
+    int res =
+        await dbClient.rawDelete('DELETE FROM User WHERE id = ?', [user.id]);
+    notifyListeners();
+    return res;
   }
 }

@@ -36,6 +36,7 @@ class LoanDbHelper extends ChangeNotifier {
   Future<int> saveLoan(Loan loan) async {
     var dbClient = await db;
     int res = await dbClient.insert("Loan", loan.toMap());
+    notifyListeners();
     return res;
   }
 

@@ -34,6 +34,7 @@ class ReadingDbHelper extends ChangeNotifier {
   Future<int> saveReading(Reading reading) async {
     var dbClient = await db;
     int res = await dbClient.insert("Reading", reading.toMap());
+    notifyListeners();
     return res;
   }
 

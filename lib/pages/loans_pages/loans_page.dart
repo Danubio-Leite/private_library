@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:private_library/pages/loans_pages/borrowed_page.dart';
+import 'package:private_library/pages/loans_pages/lend_page.dart';
 
 import '../../components/custom_home_button.dart';
+import 'users_pages/users_page.dart';
 
 class LoanPage extends StatelessWidget {
   const LoanPage({super.key});
@@ -19,17 +22,29 @@ class LoanPage extends StatelessWidget {
           CustomHomeButton(
             imagePath: 'assets/images/icons/book.png',
             buttonText: 'Lend Book',
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return const LendPage();
+              }));
+            },
           ),
           CustomHomeButton(
             imagePath: 'assets/images/icons/books.png',
             buttonText: 'Borrowed books',
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return const BorrowedBooksPage();
+              }));
+            },
           ),
           CustomHomeButton(
             imagePath: 'assets/images/icons/notebook.png',
             buttonText: 'Users',
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return const UsersPage();
+              }));
+            },
           ),
         ],
       ),
