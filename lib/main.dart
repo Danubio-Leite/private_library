@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
               GoogleFonts.jacquesFrancois(textStyle: textTheme.bodyMedium),
         ),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color.fromARGB(255, 103, 145, 92),
+          backgroundColor: Colors.blueGrey,
           foregroundColor: Colors.black,
           titleTextStyle: TextStyle(
             color: Colors.black,
@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green)
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey)
             .copyWith(background: const Color.fromARGB(255, 255, 226, 209)),
         useMaterial3: true,
       ),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/book_model.dart';
@@ -14,6 +15,7 @@ class BookDetailsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detalhes do Livro'),
+        backgroundColor: Colors.blueGrey,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -27,45 +29,50 @@ class BookDetailsPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Flexible(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            book.title,
-                            style: const TextStyle(
-                              fontSize: 21,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          if (book.subtitle != null &&
-                              book.subtitle!.isNotEmpty)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                book.subtitle!,
+                      child: SizedBox(
+                        height: 200,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Flexible(
+                              flex: 5,
+                              child: AutoSizeText(
+                                book.title,
                                 style: const TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blueGrey,
                                 ),
                               ),
                             ),
-                          const Padding(
-                            padding: EdgeInsets.only(
-                              top: 24.0,
-                              bottom: 24.0,
-                              right: 14.0,
+                            if (book.subtitle != null &&
+                                book.subtitle!.isNotEmpty)
+                              Flexible(
+                                flex: 4,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: AutoSizeText(
+                                    book.subtitle!,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            const SizedBox(height: 8),
+                            Flexible(
+                              child: AutoSizeText(
+                                book.author,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
-                            child: Divider(
-                              height: 1,
-                              color: Colors.grey,
-                            ),
-                          ),
-                          Text(
-                            book.author,
-                            style: const TextStyle(
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                     Flexible(
@@ -86,6 +93,7 @@ class BookDetailsPage extends StatelessWidget {
                       book.publisher!,
                       style: const TextStyle(
                         fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -98,6 +106,7 @@ class BookDetailsPage extends StatelessWidget {
                       'Publicado em: ${book.publishedDate!}',
                       style: const TextStyle(
                         fontSize: 16,
+                        color: Colors.grey,
                       ),
                     ),
                     const SizedBox(height: 8),

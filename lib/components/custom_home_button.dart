@@ -24,7 +24,7 @@ class CustomHomeButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(2),
           ),
           child: Material(
-            color: const Color.fromARGB(255, 103, 145, 92),
+            color: Colors.blueGrey,
             borderRadius: BorderRadius.circular(2),
             child: InkWell(
               onTap: onPressed,
