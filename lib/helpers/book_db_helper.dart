@@ -74,4 +74,41 @@ class BookDbHelper extends ChangeNotifier {
     }
     return books;
   }
+
+  Future<List<Book>> searchBooks(String query) async {
+    var dbClient = await db;
+    List<Map> list = await dbClient
+        .rawQuery('SELECT * FROM Book WHERE title LIKE ?', ['%$query%']);
+    List<Book> books = List<Book>.empty(growable: true);
+    for (int i = 0; i < list.length; i++) {
+      var book = Book(
+        id: list[i]["id"],
+        isbn: list[i]["isbn"],
+        title: list[i]["title"],
+        author: list[i]["author"],
+        publisher: list[i]["publisher"],
+        genre: list[i]["genre"],
+        publishedDate: list[i]["publishedDate"],
+        synopsis: list[i]["synopsis"],
+        subtitle: list[i]["subtitle"],
+        shelf: list[i]["shelf"],
+        loanDate: list[i]["loanDate"],
+        returnDate: list[i]["returnDate"],
+        loanUserId: list[i]["loanUserId"],
+        format: list[i]["format"],
+        cover: list[i]["cover"],
+      );
+      books.add(book);
+    }
+    return books;
+  }
+
+  Future<void> deleteBook(int id) async {
+    var dbClient = await db;
+    await dbClient.delete(
+      'Book',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
 }
