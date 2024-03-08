@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
               GoogleFonts.jacquesFrancois(textStyle: textTheme.bodyMedium),
         ),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.blueGrey,
+          backgroundColor: Color.fromARGB(255, 109, 149, 169),
           foregroundColor: Colors.black,
           titleTextStyle: TextStyle(
             color: Colors.black,

@@ -18,7 +18,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: Color.fromARGB(255, 103, 145, 92),
+        color: Color.fromARGB(255, 109, 149, 169),
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(1),
           bottomRight: Radius.circular(1),
@@ -32,7 +32,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       child: Container(
         decoration: const BoxDecoration(
-          color: Colors.blueGrey,
+          color: Color.fromARGB(255, 109, 149, 169),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(2),
             bottomRight: Radius.circular(2),
