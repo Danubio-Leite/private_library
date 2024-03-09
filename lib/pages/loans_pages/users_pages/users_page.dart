@@ -46,16 +46,6 @@ class _UsersPageState extends State<UsersPage> {
         ),
         body: Column(
           children: [
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: TextField(
-            //     controller: _searchController,
-            //     decoration: const InputDecoration(
-            //       labelText: 'Pesquisar',
-            //       suffixIcon: Icon(Icons.search),
-            //     ),
-            //   ),
-            // ),
             Consumer<UserDbHelper>(builder: (context, dbHelper, child) {
               return FutureBuilder<List<User>>(
                 future: Provider.of<UserDbHelper>(context, listen: false)
@@ -86,14 +76,68 @@ class _UsersPageState extends State<UsersPage> {
                                   title: Text(users[index].name),
                                   subtitle: Text(users[index].email ?? ''),
                                   onTap: () {
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //     builder: (context) => EditUserPage(
-                                    //         user: users[
-                                    //             index]), // Página para editar o usuário
-                                    //   ),
-                                    // );
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    const Text(
+                                                      '',
+                                                    ),
+                                                    IconButton(
+                                                      icon: const Icon(
+                                                          Icons.close),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      Text(
+                                                        users[index].name,
+                                                        style: const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 24),
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 8,
+                                                      ),
+                                                      if (users[index].phone !=
+                                                          null)
+                                                        Text(
+                                                            'Telefone: ${users[index].phone ?? ''}'),
+                                                      if (users[index].email !=
+                                                          null)
+                                                        Text(
+                                                            'Email: ${users[index].email ?? ''}'),
+                                                      const SizedBox(
+                                                          height: 36),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        });
                                   },
                                   trailing: Row(
                                     mainAxisSize: MainAxisSize.min,
@@ -101,14 +145,112 @@ class _UsersPageState extends State<UsersPage> {
                                       IconButton(
                                         icon: const Icon(Icons.edit),
                                         onPressed: () {
-                                          // Navigator.push(
-                                          //   context,
-                                          //   MaterialPageRoute(
-                                          //     builder: (context) => EditUserPage(
-                                          //         user: users[
-                                          //             index]), // Página para editar o usuário
-                                          //   ),
-                                          // );
+                                          TextEditingController nameController =
+                                              TextEditingController(
+                                                  text: users[index].name);
+                                          TextEditingController
+                                              emailController =
+                                              TextEditingController(
+                                                  text: users[index].email);
+                                          TextEditingController
+                                              phoneController =
+                                              TextEditingController(
+                                            text: users[index].phone ?? '',
+                                          );
+
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Text(
+                                                    'Editar usuário'),
+                                                content: Column(
+                                                  children: <Widget>[
+                                                    TextField(
+                                                      controller:
+                                                          nameController,
+                                                      decoration:
+                                                          const InputDecoration(
+                                                        labelText: 'Nome',
+                                                      ),
+                                                    ),
+                                                    TextField(
+                                                      controller:
+                                                          phoneController,
+                                                      decoration:
+                                                          const InputDecoration(
+                                                        labelText: 'Telefone',
+                                                      ),
+                                                    ),
+                                                    TextField(
+                                                      controller:
+                                                          emailController,
+                                                      decoration:
+                                                          const InputDecoration(
+                                                        labelText: 'Email',
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                actions: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                    children: [
+                                                      ElevatedButton(
+                                                        style: ElevatedButton
+                                                            .styleFrom(
+                                                          elevation: 0,
+                                                          backgroundColor:
+                                                              Colors
+                                                                  .transparent,
+                                                        ),
+                                                        child: const Text(
+                                                            'Cancelar'),
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                      ),
+                                                      ElevatedButton(
+                                                        style: ElevatedButton
+                                                            .styleFrom(
+                                                          elevation: 0,
+                                                          backgroundColor:
+                                                              Colors
+                                                                  .transparent,
+                                                        ),
+                                                        child: const Text(
+                                                            'Salvar'),
+                                                        onPressed: () {
+                                                          User updatedUser =
+                                                              User(
+                                                            id: users[index].id,
+                                                            name: nameController
+                                                                .text,
+                                                            phone:
+                                                                phoneController
+                                                                    .text,
+                                                            email:
+                                                                emailController
+                                                                    .text,
+                                                          );
+                                                          Provider.of<UserDbHelper>(
+                                                                  context,
+                                                                  listen: false)
+                                                              .updateUser(
+                                                                  updatedUser); // Método para atualizar o usuário
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
                                         },
                                       ),
                                       IconButton(

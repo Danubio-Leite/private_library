@@ -73,4 +73,11 @@ class LoanDbHelper extends ChangeNotifier {
     }
     return loans;
   }
+
+  Future<int> deleteLoan(int id) async {
+    var dbClient = await db;
+    int res = await dbClient.rawDelete('DELETE FROM Loan WHERE id = ?', [id]);
+    notifyListeners();
+    return res;
+  }
 }

@@ -59,4 +59,12 @@ class UserDbHelper extends ChangeNotifier {
     notifyListeners();
     return res;
   }
+
+  Future<int> updateUser(User user) async {
+    var dbClient = await db;
+    int res = await dbClient.update("User", user.toMap(),
+        where: "id = ?", whereArgs: <int>[user.id]);
+    notifyListeners();
+    return res;
+  }
 }
