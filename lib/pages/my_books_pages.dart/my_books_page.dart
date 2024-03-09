@@ -1,3 +1,5 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:awesome_icons/awesome_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +17,9 @@ class MyBooksPage extends StatefulWidget {
 class _MyBooksPageState extends State<MyBooksPage> {
   final TextEditingController _searchController = TextEditingController();
   String _searchText = "";
+  bool _selectionMode = false; // novo estado para controlar o modo de seleção
+  ValueNotifier<List<Book>> _selectedBooks = ValueNotifier<List<Book>>(
+      []); // ValueNotifier para armazenar os livros selecionados
 
   @override
   void initState() {
@@ -32,6 +37,69 @@ class _MyBooksPageState extends State<MyBooksPage> {
         appBar: AppBar(
           title: const Text('Meus Livros'),
         ),
+        floatingActionButton: _selectionMode
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FloatingActionButton(
+                    backgroundColor: Color.fromARGB(255, 167, 77, 77),
+                    onPressed: () async {
+                      // Excluir os livros selecionados
+                      await Provider.of<BookDbHelper>(context, listen: false)
+                          .deleteBooks(_selectedBooks.value);
+                      setState(() {
+                        _selectionMode = false;
+                        _selectedBooks.value.clear();
+                      });
+                    },
+                    tooltip: "Excluir livros",
+                    child: const Padding(
+                      padding: EdgeInsets.all(4.0),
+                      child: Text(
+                        "Excluir",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  FloatingActionButton(
+                    backgroundColor: const Color.fromARGB(255, 109, 149, 169),
+                    onPressed: () {
+                      setState(() {
+                        _selectionMode = false;
+                        _selectedBooks.value.clear();
+                      });
+                    },
+                    tooltip: "Cancelar",
+                    child: const Padding(
+                      padding: EdgeInsets.all(4.0),
+                      child: AutoSizeText(
+                        "Cancelar",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : FloatingActionButton(
+                backgroundColor: const Color.fromARGB(255, 109, 149, 169),
+                onPressed: () {
+                  setState(() {
+                    _selectionMode = true;
+                  });
+                },
+                child: const Icon(
+                  FontAwesomeIcons.trash,
+                ),
+              ),
         body: Column(
           children: [
             Padding(
@@ -67,29 +135,66 @@ class _MyBooksPageState extends State<MyBooksPage> {
                       child: ListView.builder(
                         itemCount: books.length,
                         itemBuilder: (_, index) {
-                          return Column(
-                            children: [
-                              ListTile(
-                                title: Text(books[index].title),
-                                subtitle: Text(books[index].author),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          BookDetailsPage(book: books[index]),
+                          return ValueListenableBuilder(
+                            valueListenable: _selectedBooks,
+                            builder: (context, List<Book> selectedBooks, _) {
+                              return Column(
+                                children: [
+                                  ListTile(
+                                    leading:
+                                        _selectionMode // se o modo de seleção estiver ativo, mostrar o checkbox
+                                            ? Checkbox(
+                                                value: selectedBooks
+                                                    .contains(books[index]),
+                                                onChanged: (selected) {
+                                                  if (selected ?? false) {
+                                                    selectedBooks
+                                                        .add(books[index]);
+                                                  } else {
+                                                    selectedBooks
+                                                        .remove(books[index]);
+                                                  }
+                                                  _selectedBooks.value =
+                                                      List.from(selectedBooks);
+                                                },
+                                              )
+                                            : null,
+                                    title: Text(books[index].title),
+                                    subtitle: Text(books[index].author),
+                                    onTap: () {
+                                      if (_selectionMode) {
+                                        // se o modo de seleção estiver ativo, selecionar ou desmarcar o livro
+                                        if (selectedBooks
+                                            .contains(books[index])) {
+                                          selectedBooks.remove(books[index]);
+                                        } else {
+                                          selectedBooks.add(books[index]);
+                                        }
+                                        _selectedBooks.value =
+                                            List.from(selectedBooks);
+                                      } else {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                BookDetailsPage(
+                                                    book: books[index]),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                  const Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: Divider(
+                                      height: 1,
+                                      color: Colors.grey,
                                     ),
-                                  );
-                                },
-                              ),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Divider(
-                                  height: 1,
-                                  color: Colors.grey,
-                                ),
-                              )
-                            ],
+                                  )
+                                ],
+                              );
+                            },
                           );
                         },
                       ),
@@ -105,6 +210,7 @@ class _MyBooksPageState extends State<MyBooksPage> {
   @override
   void dispose() {
     _searchController.dispose();
+    _selectedBooks.dispose();
     super.dispose();
   }
 }

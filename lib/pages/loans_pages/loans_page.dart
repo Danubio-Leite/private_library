@@ -21,7 +21,7 @@ class LoanPage extends StatelessWidget {
         children: [
           CustomHomeButton(
             imagePath: 'assets/images/icons/book.png',
-            buttonText: 'Lend Book',
+            buttonText: 'Emprestar Livro',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return const LendPage();
@@ -30,7 +30,7 @@ class LoanPage extends StatelessWidget {
           ),
           CustomHomeButton(
             imagePath: 'assets/images/icons/books.png',
-            buttonText: 'Borrowed books',
+            buttonText: 'Livros Emprestados',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return const BorrowedBooksPage();
@@ -39,7 +39,7 @@ class LoanPage extends StatelessWidget {
           ),
           CustomHomeButton(
             imagePath: 'assets/images/icons/notebook.png',
-            buttonText: 'Users',
+            buttonText: 'Usuários',
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return const UsersPage();

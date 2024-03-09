@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:private_library/components/custom_button.dart';
 import 'package:provider/provider.dart';
@@ -34,9 +36,29 @@ class _AddBookPageState extends State<AddBookPage> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.barcode_reader),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              elevation: 1,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6),
+              ),
+            ),
+            onPressed: () async {
+              String barcode = await FlutterBarcodeScanner.scanBarcode(
+                "#ff6666",
+                "Cancelar",
+                true,
+                ScanMode.BARCODE,
+              );
+              isbnController.text = barcode;
+            },
+            child: Image.asset(
+              'assets/images/icons/barcode.png',
+              height: double.infinity,
+              fit: BoxFit.scaleDown,
+            ),
           ),
         ],
         title: const Text('Adicionar Livro'),
@@ -53,6 +75,7 @@ class _AddBookPageState extends State<AddBookPage> {
                     child: CustomFormField(
                       controller: isbnController,
                       label: 'ISBN',
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -130,11 +153,6 @@ class _AddBookPageState extends State<AddBookPage> {
                     ),
                   ),
                 ],
-              ),
-              const SizedBox(height: 8),
-              CustomFormField(
-                label: 'Link da Capa',
-                controller: coverLinkController,
               ),
               const SizedBox(height: 8),
               CustomFormField(

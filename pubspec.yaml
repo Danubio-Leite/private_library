@@ -24,7 +24,9 @@ dependencies:
   provider:
   sqflite: 
   path_provider: 
-
+  flutter_barcode_scanner: ^2.0.0
+  awesome_icons:
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -112,4 +112,18 @@ class BookDbHelper extends ChangeNotifier {
       whereArgs: [id],
     );
   }
+
+  Future<void> deleteBooks(List<Book> books) async {
+    var dbClient = await db;
+    var batch = dbClient.batch();
+    for (var book in books) {
+      batch.delete(
+        'Book',
+        where: 'id = ?',
+        whereArgs: [book.id],
+      );
+    }
+    await batch.commit(noResult: true);
+    notifyListeners();
+  }
 }

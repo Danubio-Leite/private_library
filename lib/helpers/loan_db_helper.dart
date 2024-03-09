@@ -80,4 +80,12 @@ class LoanDbHelper extends ChangeNotifier {
     notifyListeners();
     return res;
   }
+
+  Future<int> updateLoan(Loan loan) async {
+    var dbClient = await db;
+    int res = await dbClient.update("Loan", loan.toMap(),
+        where: "id = ?", whereArgs: <int>[loan.id]);
+    notifyListeners();
+    return res;
+  }
 }

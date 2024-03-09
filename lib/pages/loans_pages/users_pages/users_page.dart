@@ -1,3 +1,4 @@
+import 'package:awesome_icons/awesome_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -143,7 +144,10 @@ class _UsersPageState extends State<UsersPage> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
                                       IconButton(
-                                        icon: const Icon(Icons.edit),
+                                        icon: const Icon(
+                                          FontAwesomeIcons.edit,
+                                          size: 18,
+                                        ),
                                         onPressed: () {
                                           TextEditingController nameController =
                                               TextEditingController(
@@ -165,7 +169,9 @@ class _UsersPageState extends State<UsersPage> {
                                                 title: const Text(
                                                     'Editar usuário'),
                                                 content: Column(
-                                                  children: <Widget>[
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
                                                     TextField(
                                                       controller:
                                                           nameController,
@@ -253,8 +259,17 @@ class _UsersPageState extends State<UsersPage> {
                                           );
                                         },
                                       ),
+                                      const SizedBox(
+                                        height: 30,
+                                        child: VerticalDivider(
+                                          color: Colors.grey,
+                                        ),
+                                      ),
                                       IconButton(
-                                        icon: const Icon(Icons.delete),
+                                        icon: const Icon(
+                                          FontAwesomeIcons.trash,
+                                          size: 18,
+                                        ),
                                         onPressed: () {
                                           showDialog(
                                             context: context,

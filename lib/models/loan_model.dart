@@ -6,7 +6,7 @@ class Loan {
   final User user;
   final Book book;
   final DateTime startDateLoan;
-  final DateTime? endDateLoan;
+  DateTime? endDateLoan;
   final String? loanNote;
 
   Loan({

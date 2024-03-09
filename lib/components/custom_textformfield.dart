@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class CustomFormField extends StatelessWidget {
@@ -14,6 +15,7 @@ class CustomFormField extends StatelessWidget {
   final TextInputType keyboardType;
   final int? minLines;
   final int? maxLines;
+  final List<TextInputFormatter>? inputFormatters;
 
   const CustomFormField({
     Key? key,
@@ -29,6 +31,7 @@ class CustomFormField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.minLines,
     this.maxLines,
+    this.inputFormatters,
   }) : super(key: key);
 
   @override
@@ -41,7 +44,8 @@ class CustomFormField extends StatelessWidget {
       controller: controller,
       onChanged: onChanged,
       keyboardType: keyboardType,
-      inputFormatters: maskFormatter != null ? [maskFormatter!] : [],
+      inputFormatters: inputFormatters,
+      // inputFormatters: maskFormatter != null ? [maskFormatter!] : [],
       decoration: InputDecoration(
         labelText: label,
         border: const OutlineInputBorder(),
