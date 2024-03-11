@@ -1,7 +1,6 @@
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../../helpers/user_db_helper.dart';
 import '../../../models/user_model.dart';
 import 'add_User_page.dart';

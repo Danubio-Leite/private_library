@@ -53,6 +53,35 @@ class _AddBookPageState extends State<AddBookPage> {
                 ScanMode.BARCODE,
               );
               isbnController.text = barcode;
+              final details = await fetchBookDetails(isbnController.text);
+              await fetchImageAndSave(isbnController.text);
+              if (details != null &&
+                  details['items'] != null &&
+                  details['items'].length > 0) {
+                var bookDetails = details['items'][0]['volumeInfo'];
+                if (bookDetails != null) {
+                  titleController.text = bookDetails['title'] ?? '';
+                  subtitleController.text = bookDetails['subtitle'] ?? '';
+                  authorController.text = bookDetails['authors'] != null
+                      ? bookDetails['authors'][0]
+                      : '';
+                  publisherController.text = bookDetails['publisher'] ?? '';
+                  genreController.text = bookDetails['categories'] != null
+                      ? bookDetails['categories'][0]
+                      : '';
+                  publishedDateController.text =
+                      bookDetails['publishedDate'] != null
+                          ? bookDetails['publishedDate'].substring(0, 4)
+                          : '';
+                  synopsisController.text = bookDetails['description'] ?? '';
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Informações do livro não encontradas.'),
+                    ),
+                  );
+                }
+              }
             },
             child: Image.asset(
               'assets/images/icons/barcode.png',
@@ -109,7 +138,12 @@ class _AddBookPageState extends State<AddBookPage> {
                           synopsisController.text =
                               bookDetails['description'] ?? '';
                         } else {
-                          // Trate o caso em que os detalhes do livro não estão disponíveis
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content:
+                                  Text('Informações do livro não encontradas.'),
+                            ),
+                          );
                         }
                       }
                     },
