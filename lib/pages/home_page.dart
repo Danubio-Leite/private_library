@@ -8,6 +8,7 @@ import 'about_app_page.dart';
 import 'contact.dart';
 import '../i18n/app_localizations.dart';
 import 'loans_pages/loans_page.dart';
+import 'my_ readings_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -46,6 +47,18 @@ class HomePage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => const MyBooksPage(),
+                    ),
+                  );
+                },
+              ),
+              CustomHomeButton(
+                imagePath: 'assets/images/icons/desk.png',
+                buttonText: 'Minhas Leituras',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MyReadingsPage(),
                     ),
                   );
                 },

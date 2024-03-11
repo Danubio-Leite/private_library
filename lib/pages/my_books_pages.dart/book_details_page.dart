@@ -3,8 +3,14 @@ import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:private_library/components/custom_button.dart';
+import 'package:provider/provider.dart';
 
+import '../../helpers/loan_db_helper.dart';
+import '../../helpers/user_db_helper.dart';
 import '../../models/book_model.dart';
+import '../../models/loan_model.dart';
+import '../../models/user_model.dart';
 
 class BookDetailsPage extends StatelessWidget {
   final Book book;
@@ -123,6 +129,163 @@ class BookDetailsPage extends StatelessWidget {
                     ),
                   ],
                 ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: CustomButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return LayoutBuilder(
+                              builder: (BuildContext context,
+                                  BoxConstraints constraints) {
+                                return AlertDialog(
+                                  content: Stack(
+                                    children: [
+                                      SizedBox(
+                                        height: constraints.maxHeight *
+                                            0.5, // 50% da altura da tela
+                                        width: constraints.maxWidth *
+                                            0.8, // 80% da largura da tela
+                                        child: SingleChildScrollView(
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          child: Column(
+                                            children: [
+                                              const Padding(
+                                                padding:
+                                                    EdgeInsets.only(top: 24.0),
+                                                child: Align(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Text(
+                                                    'O livro está sendo emprestado para:',
+                                                    style: TextStyle(
+                                                        fontSize: 21,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: constraints.maxHeight *
+                                                    0.4, // 40% da altura da tela
+                                                child:
+                                                    FutureBuilder<List<User>>(
+                                                  future:
+                                                      Provider.of<UserDbHelper>(
+                                                              context,
+                                                              listen: false)
+                                                          .getUsers(),
+                                                  builder: (BuildContext
+                                                          context,
+                                                      AsyncSnapshot<List<User>>
+                                                          snapshot) {
+                                                    if (snapshot
+                                                            .connectionState ==
+                                                        ConnectionState
+                                                            .waiting) {
+                                                      return const Center(
+                                                          child:
+                                                              CircularProgressIndicator());
+                                                    } else {
+                                                      if (snapshot.hasError) {
+                                                        return Center(
+                                                            child: Text(
+                                                                'Erro: ${snapshot.error}'));
+                                                      } else {
+                                                        final users =
+                                                            snapshot.data!;
+                                                        return Scrollbar(
+                                                          thickness: 4.0,
+                                                          radius: const Radius
+                                                              .circular(5.0),
+                                                          child:
+                                                              ListView.builder(
+                                                            itemCount:
+                                                                users.length,
+                                                            shrinkWrap: true,
+                                                            itemBuilder:
+                                                                (_, index) {
+                                                              return Align(
+                                                                alignment: Alignment
+                                                                    .centerLeft,
+                                                                child: ListTile(
+                                                                  title: Text(
+                                                                      users[index]
+                                                                          .name),
+                                                                  onTap: () {
+                                                                    final loan =
+                                                                        Loan(
+                                                                      id: DateTime
+                                                                              .now()
+                                                                          .millisecondsSinceEpoch,
+                                                                      user: users[
+                                                                          index],
+                                                                      book:
+                                                                          book,
+                                                                      startDateLoan:
+                                                                          DateTime
+                                                                              .now(),
+                                                                    );
+                                                                    Provider.of<LoanDbHelper>(
+                                                                            context,
+                                                                            listen:
+                                                                                false)
+                                                                        .saveLoan(
+                                                                            loan);
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  },
+                                                                ),
+                                                              );
+                                                            },
+                                                          ),
+                                                        );
+                                                      }
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        right: 0,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.close),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        );
+                      },
+                      texto: 'Emprestar',
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: CustomButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      texto: 'Iniciar Leitura',
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
