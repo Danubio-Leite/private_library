@@ -36,6 +36,17 @@ class _MyBooksPageState extends State<MyBooksPage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Meus Livros'),
+          leading: _selectionMode
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    setState(() {
+                      _selectionMode = false;
+                      _selectedBooks.value.clear();
+                    });
+                  },
+                )
+              : null,
         ),
         floatingActionButton: _selectionMode
             ? Column(
