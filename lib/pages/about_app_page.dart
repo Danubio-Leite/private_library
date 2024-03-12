@@ -25,7 +25,7 @@ class AboutAppPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       const Text(
-                        'O Meus Livros foi desenvolvido para ajudar nas gestão de pequenas bibliotecas e gestão de coleções de livros.\n\nOs dados são armazenados localmente, em caso de limpeza dos dados da aplicação, desinstalação do aplicativo ou formatação do aparelho, eles serão perdidos.\n\nOs links de compra disponibilizados são provenientes do programa de associados Amazon e qualquer compra realizada através deles é de responsabilidade da Amazon Servicos de Varejo Do Brasil LTDA.\n\nCaso tenha sugestões para novas ferramentas ou ajustes nas atuais, sinta-se à vontade para compartilhar conosco através do ícone "Fale Conosco" disponível na tela inicial.',
+                        'O Meus Livros foi desenvolvido para ajudar nas gestão de pequenas bibliotecas e coleções de livros.\n\nOs dados são armazenados localmente. Em caso de desinstalação, limpeza dos dados da aplicação ou formatação do aparelho, eles serão perdidos.\n\nOs links de compra disponibilizados são provenientes do programa de associados Amazon e qualquer compra realizada através deles é de responsabilidade da Amazon Servicos de Varejo Do Brasil LTDA.\n\nCaso tenha sugestões para novas ferramentas ou ajustes nas atuais, sinta-se à vontade para compartilhar conosco através do ícone "Fale Conosco" disponível na tela inicial.',
                         style: TextStyle(color: Colors.black, fontSize: 14),
                       ),
                       const SizedBox(height: 20),

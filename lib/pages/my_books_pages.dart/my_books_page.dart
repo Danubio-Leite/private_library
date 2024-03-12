@@ -57,68 +57,72 @@ class _MyBooksPageState extends State<MyBooksPage> {
                 )
               : null,
         ),
-        floatingActionButton: _selectionMode
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  FloatingActionButton(
-                    backgroundColor: Color.fromARGB(255, 167, 77, 77),
-                    onPressed: () async {
-                      await Provider.of<BookDbHelper>(context, listen: false)
-                          .deleteBooks(_selectedBooks.value);
-                      setState(() {
-                        _selectionMode = false;
-                        _selectedBooks.value.clear();
-                      });
-                    },
-                    tooltip: "Excluir livros",
-                    child: const Padding(
-                      padding: EdgeInsets.all(4.0),
-                      child: Text(
-                        "Excluir",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+        floatingActionButton: _hasBooks
+            ? (_selectionMode
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      FloatingActionButton(
+                        backgroundColor: Color.fromARGB(255, 167, 77, 77),
+                        onPressed: () async {
+                          await Provider.of<BookDbHelper>(context,
+                                  listen: false)
+                              .deleteBooks(_selectedBooks.value);
+                          setState(() {
+                            _selectionMode = false;
+                            _selectedBooks.value.clear();
+                          });
+                        },
+                        tooltip: "Excluir livros",
+                        child: const Padding(
+                          padding: EdgeInsets.all(4.0),
+                          child: Text(
+                            "Excluir",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  FloatingActionButton(
+                      const SizedBox(height: 10),
+                      FloatingActionButton(
+                        backgroundColor:
+                            const Color.fromARGB(255, 109, 149, 169),
+                        onPressed: () {
+                          setState(() {
+                            _selectionMode = false;
+                            _selectedBooks.value.clear();
+                          });
+                        },
+                        tooltip: "Cancelar",
+                        child: const Padding(
+                          padding: EdgeInsets.all(4.0),
+                          child: AutoSizeText(
+                            "Cancelar",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : FloatingActionButton(
                     backgroundColor: const Color.fromARGB(255, 109, 149, 169),
                     onPressed: () {
                       setState(() {
-                        _selectionMode = false;
-                        _selectedBooks.value.clear();
+                        _selectionMode = true;
                       });
                     },
-                    tooltip: "Cancelar",
-                    child: const Padding(
-                      padding: EdgeInsets.all(4.0),
-                      child: AutoSizeText(
-                        "Cancelar",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                    child: const Icon(
+                      FontAwesomeIcons.trash,
                     ),
-                  ),
-                ],
-              )
-            : FloatingActionButton(
-                backgroundColor: const Color.fromARGB(255, 109, 149, 169),
-                onPressed: () {
-                  setState(() {
-                    _selectionMode = true;
-                  });
-                },
-                child: const Icon(
-                  FontAwesomeIcons.trash,
-                ),
-              ),
+                  ))
+            : Container(),
         body: Column(
           children: [
             _hasBooks
