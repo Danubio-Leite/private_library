@@ -17,9 +17,10 @@ class MyBooksPage extends StatefulWidget {
 class _MyBooksPageState extends State<MyBooksPage> {
   final TextEditingController _searchController = TextEditingController();
   String _searchText = "";
-  bool _selectionMode = false; // novo estado para controlar o modo de seleção
-  ValueNotifier<List<Book>> _selectedBooks = ValueNotifier<List<Book>>(
-      []); // ValueNotifier para armazenar os livros selecionados
+  bool _selectionMode = false;
+  bool _hasBooks = false;
+  ValueNotifier<List<Book>> _selectedBooks = ValueNotifier<List<Book>>([]);
+  List<Book> _books = [];
 
   @override
   void initState() {
@@ -29,6 +30,14 @@ class _MyBooksPageState extends State<MyBooksPage> {
         _searchText = _searchController.text;
       });
     });
+    _fetchBooks();
+  }
+
+  Future<void> _fetchBooks() async {
+    _books = await Provider.of<BookDbHelper>(context, listen: false).getBooks();
+    setState(() {
+      _hasBooks = _books.isNotEmpty;
+    });
   }
 
   @override
@@ -36,6 +45,17 @@ class _MyBooksPageState extends State<MyBooksPage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Meus Livros'),
+          leading: _selectionMode
+              ? IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    setState(() {
+                      _selectionMode = false;
+                      _selectedBooks.value.clear();
+                    });
+                  },
+                )
+              : null,
         ),
         floatingActionButton: _selectionMode
             ? Column(
@@ -44,7 +64,6 @@ class _MyBooksPageState extends State<MyBooksPage> {
                   FloatingActionButton(
                     backgroundColor: Color.fromARGB(255, 167, 77, 77),
                     onPressed: () async {
-                      // Excluir os livros selecionados
                       await Provider.of<BookDbHelper>(context, listen: false)
                           .deleteBooks(_selectedBooks.value);
                       setState(() {
@@ -102,16 +121,18 @@ class _MyBooksPageState extends State<MyBooksPage> {
               ),
         body: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: _searchController,
-                decoration: const InputDecoration(
-                  labelText: 'Search',
-                  suffixIcon: Icon(Icons.search),
-                ),
-              ),
-            ),
+            _hasBooks
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: const InputDecoration(
+                        labelText: 'Search',
+                        suffixIcon: Icon(Icons.search),
+                      ),
+                    ),
+                  )
+                : Container(),
             FutureBuilder<List<Book>>(
               future:
                   Provider.of<BookDbHelper>(context, listen: false).getBooks(),
@@ -131,6 +152,14 @@ class _MyBooksPageState extends State<MyBooksPage> {
                               .toLowerCase()
                               .contains(_searchText.toLowerCase());
                     }).toList();
+                    _hasBooks = books.isNotEmpty;
+                    if (books.isEmpty) {
+                      return const Expanded(
+                        child: Center(
+                          child: Text('Nenhum Livro Cadastrado.'),
+                        ),
+                      );
+                    }
                     return Expanded(
                       child: ListView.builder(
                         itemCount: books.length,
@@ -202,7 +231,7 @@ class _MyBooksPageState extends State<MyBooksPage> {
                   }
                 }
               },
-            ),
+            )
           ],
         ));
   }

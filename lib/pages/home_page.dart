@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:private_library/components/custom_appbar.dart';
 import 'package:private_library/pages/add_book_page.dart';
 import 'package:private_library/pages/my_books_pages.dart/my_books_page.dart';
-
+import 'package:private_library/pages/wish_list_page.dart';
 import '../components/custom_home_button.dart';
+import 'about_app_page.dart';
 import 'contact.dart';
 import '../i18n/app_localizations.dart';
 import 'loans_pages/loans_page.dart';
+import 'my_ readings_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -50,11 +52,29 @@ class HomePage extends StatelessWidget {
                 },
               ),
               CustomHomeButton(
-                imagePath: 'assets/images/icons/trolley.png',
-                buttonText:
-                    Localizations.of(context, AppLocalizations).wishList,
-                onPressed: null,
+                imagePath: 'assets/images/icons/desk.png',
+                buttonText: 'Minhas Leituras',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MyReadingsPage(),
+                    ),
+                  );
+                },
               ),
+              CustomHomeButton(
+                  imagePath: 'assets/images/icons/trolley.png',
+                  buttonText:
+                      Localizations.of(context, AppLocalizations).wishList,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const WishListPage(),
+                      ),
+                    );
+                  }),
               CustomHomeButton(
                 imagePath: 'assets/images/icons/hand-book.png',
                 buttonText: Localizations.of(context, AppLocalizations).loans,
@@ -83,7 +103,14 @@ class HomePage extends StatelessWidget {
                 imagePath: 'assets/images/icons/smartphone.png',
                 buttonText:
                     Localizations.of(context, AppLocalizations).aboutApp,
-                onPressed: null,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AboutAppPage(),
+                    ),
+                  );
+                },
               ),
             ],
           )

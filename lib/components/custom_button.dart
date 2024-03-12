@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
@@ -36,7 +37,7 @@ class CustomButton extends StatelessWidget {
             )
           :
           // ignore: prefer_const_constructors
-          Text(
+          AutoSizeText(
               texto!,
               style: const TextStyle(
                 fontSize: 16,

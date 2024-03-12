@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:private_library/helpers/wish_db_helper.dart';
 import 'package:provider/provider.dart';
 import 'helpers/book_db_helper.dart';
 import 'helpers/loan_db_helper.dart';
@@ -16,6 +17,7 @@ void main() {
         ChangeNotifierProvider<BookDbHelper>(create: (_) => BookDbHelper()),
         ChangeNotifierProvider<UserDbHelper>(create: (_) => UserDbHelper()),
         ChangeNotifierProvider<LoanDbHelper>(create: (_) => LoanDbHelper()),
+        ChangeNotifierProvider<WishDbHelper>(create: (_) => WishDbHelper()),
         ChangeNotifierProvider<ReadingDbHelper>(
             create: (_) => ReadingDbHelper()),
       ],

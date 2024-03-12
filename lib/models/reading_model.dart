@@ -1,10 +1,10 @@
 import 'book_model.dart';
 
 class Reading {
-  final String id;
+  final int id;
   final Book book;
   final DateTime startDateReading;
-  final DateTime? endDateReading;
+  DateTime? endDateReading;
   final String? readingNote;
 
   Reading({
@@ -23,5 +23,17 @@ class Reading {
       'endDateReading': endDateReading?.toIso8601String(),
       'readingNote': readingNote,
     };
+  }
+
+  factory Reading.fromMap(Map<String, dynamic> map) {
+    return Reading(
+      id: map['id'],
+      book: Book.fromMap(map),
+      startDateReading: DateTime.parse(map['startDateReading']),
+      endDateReading: map['endDateReading'] != null
+          ? DateTime.parse(map['endDateReading'])
+          : null,
+      readingNote: map['readingNote'],
+    );
   }
 }

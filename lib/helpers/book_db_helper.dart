@@ -4,6 +4,9 @@ import 'dart:async';
 import '../models/book_model.dart';
 import 'package:path/path.dart';
 
+import 'loan_db_helper.dart';
+import 'reading_db_helper.dart';
+
 class BookDbHelper extends ChangeNotifier {
   static const _databaseName = "indices.db";
   static const _databaseVersion = 1;
@@ -115,8 +118,23 @@ class BookDbHelper extends ChangeNotifier {
 
   Future<void> deleteBooks(List<Book> books) async {
     var dbClient = await db;
+    var loanDbClient = await LoanDbHelper().db;
+    var readingDbClient = await ReadingDbHelper().db;
     var batch = dbClient.batch();
     for (var book in books) {
+      // Excluir empréstimos e leituras associados
+      await loanDbClient.delete(
+        'Loan',
+        where: 'bookId = ?',
+        whereArgs: [book.id],
+      );
+      await readingDbClient.delete(
+        'Reading',
+        where: 'bookId = ?',
+        whereArgs: [book.id],
+      );
+
+      // Excluir o livro
       batch.delete(
         'Book',
         where: 'id = ?',

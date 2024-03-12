@@ -63,4 +63,22 @@ class ReadingDbHelper extends ChangeNotifier {
     }
     return readings;
   }
+
+  Future<int> deleteReading(int id) async {
+    var dbClient = await db;
+    int res =
+        await dbClient.rawDelete('DELETE FROM Reading WHERE id = ?', [id]);
+    notifyListeners();
+    return res;
+  }
+
+  Future<int> updateReading(
+    Reading reading,
+  ) async {
+    var dbClient = await db;
+    int res = await dbClient.update("Reading", reading.toMap(),
+        where: "id = ?", whereArgs: <int>[reading.id]);
+    notifyListeners();
+    return res;
+  }
 }
