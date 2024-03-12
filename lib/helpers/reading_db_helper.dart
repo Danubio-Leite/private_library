@@ -71,4 +71,14 @@ class ReadingDbHelper extends ChangeNotifier {
     notifyListeners();
     return res;
   }
+
+  Future<int> updateReading(
+    Reading reading,
+  ) async {
+    var dbClient = await db;
+    int res = await dbClient.update("Reading", reading.toMap(),
+        where: "id = ?", whereArgs: <int>[reading.id]);
+    notifyListeners();
+    return res;
+  }
 }

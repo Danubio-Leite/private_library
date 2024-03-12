@@ -104,56 +104,67 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
                     itemCount: filteredBooks.length,
                     itemBuilder: (context, index) {
                       final loan = filteredBooks[index];
-                      return ListTile(
-                        title: Text(loan.book.title),
-                        subtitle: Text(loan.book.author),
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text(loan.book.title),
-                                  content: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text('Emprestado para:${loan.user.name}'),
-                                      Text(
-                                          'Data de empréstimo: ${loan.startDateLoan}'),
-                                      if (loan.endDateLoan != null)
-                                        Text(
-                                            'Data de devolução: ${loan.endDateLoan}'),
-                                    ],
-                                  ),
-                                  actions: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text('Close'),
+                      return Column(
+                        children: [
+                          ListTile(
+                            title: Text(loan.book.title),
+                            subtitle: Text(loan.book.author),
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text(loan.book.title),
+                                      content: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                              'Emprestado para:${loan.user.name}'),
+                                          Text(
+                                              'Data de empréstimo: ${loan.startDateLoan}'),
+                                          if (loan.endDateLoan != null)
+                                            Text(
+                                                'Data de devolução: ${loan.endDateLoan}'),
+                                        ],
+                                      ),
+                                      actions: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text('Close'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                loan.endDateLoan =
+                                                    DateTime.now();
+                                                Provider.of<LoanDbHelper>(
+                                                        context,
+                                                        listen: false)
+                                                    .updateLoan(loan);
+                                                setState(() {});
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text('Return book'),
+                                            )
+                                          ],
                                         ),
-                                        TextButton(
-                                          onPressed: () {
-                                            loan.endDateLoan = DateTime.now();
-                                            Provider.of<LoanDbHelper>(context,
-                                                    listen: false)
-                                                .updateLoan(loan);
-                                            setState(() {});
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text('Return book'),
-                                        )
                                       ],
-                                    ),
-                                  ],
-                                );
-                              });
-                        },
+                                    );
+                                  });
+                            },
+                          ),
+                          const Divider(
+                            height: 1,
+                            thickness: 1,
+                          ),
+                        ],
                       );
                     },
                   );

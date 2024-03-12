@@ -4,7 +4,7 @@ class Reading {
   final int id;
   final Book book;
   final DateTime startDateReading;
-  final DateTime? endDateReading;
+  DateTime? endDateReading;
   final String? readingNote;
 
   Reading({

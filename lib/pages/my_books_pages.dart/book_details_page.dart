@@ -7,9 +7,11 @@ import 'package:private_library/components/custom_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../helpers/loan_db_helper.dart';
+import '../../helpers/reading_db_helper.dart';
 import '../../helpers/user_db_helper.dart';
 import '../../models/book_model.dart';
 import '../../models/loan_model.dart';
+import '../../models/reading_model.dart';
 import '../../models/user_model.dart';
 
 class BookDetailsPage extends StatelessWidget {
@@ -279,7 +281,56 @@ class BookDetailsPage extends StatelessWidget {
                   Expanded(
                     child: CustomButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              content: Stack(
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(top: 24.0),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Deseja iniciar a leitura?',
+                                        style: TextStyle(
+                                            fontSize: 21,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      CustomButton(
+                                        onPressed: () {
+                                          final reading = Reading(
+                                            id: DateTime.now()
+                                                .millisecondsSinceEpoch,
+                                            book: book,
+                                            startDateReading: DateTime.now(),
+                                          );
+                                          Provider.of<ReadingDbHelper>(context,
+                                                  listen: false)
+                                              .saveReading(reading);
+                                          Navigator.pop(context);
+                                        },
+                                        texto: 'Sim',
+                                      ),
+                                      const SizedBox(width: 16),
+                                      CustomButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        texto: 'Não',
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
                       },
                       texto: 'Iniciar Leitura',
                     ),
