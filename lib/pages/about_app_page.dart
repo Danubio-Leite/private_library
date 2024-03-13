@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutAppPage extends StatelessWidget {
@@ -32,8 +33,10 @@ class AboutAppPage extends StatelessWidget {
                       RichText(
                         text: TextSpan(
                           children: [
-                            const TextSpan(
-                                style: TextStyle(
+                            TextSpan(
+                                style: GoogleFonts.jacquesFrancois(
+                                  textStyle:
+                                      Theme.of(context).textTheme.bodyMedium,
                                   color: Colors.black,
                                   fontSize: 14,
                                 ),
@@ -41,10 +44,12 @@ class AboutAppPage extends StatelessWidget {
                                     'Os ícones utilizados neste aplicativo são provenientes de '),
                             TextSpan(
                               text: 'flaticon.com',
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue,
-                                  fontSize: 14),
+                              style: GoogleFonts.jacquesFrancois(
+                                textStyle:
+                                    Theme.of(context).textTheme.bodyMedium,
+                                color: Colors.blueGrey,
+                                fontSize: 14,
+                              ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
                                   launchUrl(
