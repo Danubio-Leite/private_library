@@ -63,7 +63,7 @@ class _MyBooksPageState extends State<MyBooksPage> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       FloatingActionButton(
-                        backgroundColor: Color.fromARGB(255, 167, 77, 77),
+                        backgroundColor: const Color.fromARGB(255, 167, 77, 77),
                         onPressed: () async {
                           await Provider.of<BookDbHelper>(context,
                                   listen: false)

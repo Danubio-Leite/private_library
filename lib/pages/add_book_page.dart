@@ -20,6 +20,8 @@ class AddBookPage extends StatefulWidget {
 }
 
 class _AddBookPageState extends State<AddBookPage> {
+  String dropdownValue = 'Físico';
+  final _formKey = GlobalKey<FormState>();
   final GlobalKey _globalKey = GlobalKey();
   final isbnController = TextEditingController();
   final titleController = TextEditingController();
@@ -95,139 +97,194 @@ class _AddBookPageState extends State<AddBookPage> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Flexible(
-                    flex: 2,
-                    child: CustomFormField(
-                      controller: isbnController,
-                      label: 'ISBN',
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Flexible(
+                      flex: 2,
+                      child: CustomFormField(
+                        controller: isbnController,
+                        label: 'ISBN',
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        keyboardType: TextInputType.number,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  CustomButton(
-                    icon: Icons.search,
-                    onPressed: () async {
-                      final details =
-                          await fetchBookDetails(isbnController.text);
-                      await fetchImageAndSave(isbnController.text);
-                      if (details != null &&
-                          details['items'] != null &&
-                          details['items'].length > 0) {
-                        var bookDetails = details['items'][0]['volumeInfo'];
-                        if (bookDetails != null) {
-                          titleController.text = bookDetails['title'] ?? '';
-                          subtitleController.text =
-                              bookDetails['subtitle'] ?? '';
-                          authorController.text = bookDetails['authors'] != null
-                              ? bookDetails['authors'][0]
-                              : '';
-                          publisherController.text =
-                              bookDetails['publisher'] ?? '';
-                          genreController.text =
-                              bookDetails['categories'] != null
-                                  ? bookDetails['categories'][0]
-                                  : '';
-                          publishedDateController.text =
-                              bookDetails['publishedDate'] != null
-                                  ? bookDetails['publishedDate'].substring(0, 4)
-                                  : '';
-                          synopsisController.text =
-                              bookDetails['description'] ?? '';
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content:
-                                  Text('Informações do livro não encontradas.'),
-                            ),
-                          );
+                    const SizedBox(width: 8),
+                    CustomButton(
+                      icon: Icons.search,
+                      onPressed: () async {
+                        final details =
+                            await fetchBookDetails(isbnController.text);
+                        await fetchImageAndSave(isbnController.text);
+                        if (details != null &&
+                            details['items'] != null &&
+                            details['items'].length > 0) {
+                          var bookDetails = details['items'][0]['volumeInfo'];
+                          if (bookDetails != null) {
+                            titleController.text = bookDetails['title'] ?? '';
+                            subtitleController.text =
+                                bookDetails['subtitle'] ?? '';
+                            authorController.text =
+                                bookDetails['authors'] != null
+                                    ? bookDetails['authors'][0]
+                                    : '';
+                            publisherController.text =
+                                bookDetails['publisher'] ?? '';
+                            genreController.text =
+                                bookDetails['categories'] != null
+                                    ? bookDetails['categories'][0]
+                                    : '';
+                            publishedDateController.text =
+                                bookDetails['publishedDate'] != null
+                                    ? bookDetails['publishedDate']
+                                        .substring(0, 4)
+                                    : '';
+                            synopsisController.text =
+                                bookDetails['description'] ?? '';
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'Informações do livro não encontradas.'),
+                              ),
+                            );
+                          }
                         }
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                CustomFormField(
+                  controller: titleController,
+                  label: 'Título',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira um título';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 8),
+                CustomFormField(
+                  controller: subtitleController,
+                  label: 'Subtítulo',
+                ),
+                const SizedBox(height: 8),
+                CustomFormField(
+                  controller: authorController,
+                  label: 'Autor',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira um autor';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 8),
+                CustomFormField(
+                  controller: publisherController,
+                  label: 'Editora',
+                ),
+                const SizedBox(height: 8),
+                CustomFormField(
+                  controller: genreController,
+                  label: 'Gênero',
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey, width: 1),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: DropdownButton<String>(
+                        value: dropdownValue,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropdownValue = newValue!;
+                          });
+                        },
+                        items: <String>[
+                          'Físico',
+                          'Digital',
+                          'Audiobook',
+                          'Outro'
+                        ].map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        borderRadius: BorderRadius.circular(5),
+                        underline: const SizedBox(),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: CustomFormField(
+                        controller: publishedDateController,
+                        label: 'Ano de Publicação',
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                CustomFormField(
+                  controller: synopsisController,
+                  label: 'Sinopse',
+                  minLines: 1,
+                  maxLines: 5,
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: CustomButton(
+                    texto: 'Salvar',
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        String coverPath =
+                            await fetchImageAndSave(isbnController.text);
+
+                        List<int> imageBytes =
+                            await File(coverPath).readAsBytesSync();
+
+                        // Codificando a lista de bytes em uma string base64
+                        String base64Image = base64Encode(imageBytes);
+                        final book = Book(
+                          id: DateTime.now().millisecondsSinceEpoch,
+                          isbn: isbnController.text,
+                          title: titleController.text,
+                          author: authorController.text,
+                          publisher: publisherController.text,
+                          genre: genreController.text,
+                          publishedDate: publishedDateController.text,
+                          synopsis: synopsisController.text,
+                          subtitle: subtitleController.text,
+                          cover: base64Image,
+                          format: dropdownValue,
+                        );
+                        Provider.of<BookDbHelper>(context, listen: false)
+                            .saveBook(book);
+                        Navigator.pop(context);
                       }
                     },
                   ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              CustomFormField(
-                controller: titleController,
-                label: 'Título',
-              ),
-              const SizedBox(height: 8),
-              CustomFormField(
-                controller: subtitleController,
-                label: 'Subtítulo',
-              ),
-              const SizedBox(height: 8),
-              CustomFormField(
-                controller: authorController,
-                label: 'Autor',
-              ),
-              const SizedBox(height: 8),
-              CustomFormField(
-                controller: publisherController,
-                label: 'Editora',
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Flexible(
-                    child: CustomFormField(
-                      controller: genreController,
-                      label: 'Gênero',
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Flexible(
-                    child: CustomFormField(
-                      controller: publishedDateController,
-                      label: 'Ano de Publicação',
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              CustomFormField(
-                controller: synopsisController,
-                label: 'Sinopse',
-                minLines: 1,
-                maxLines: 5,
-              ),
-              const SizedBox(height: 8),
-              SizedBox(
-                width: double.infinity,
-                child: CustomButton(
-                  texto: 'Salvar',
-                  onPressed: () async {
-                    String coverPath =
-                        await fetchImageAndSave(isbnController.text);
-
-                    List<int> imageBytes =
-                        await File(coverPath).readAsBytesSync();
-
-// Codificando a lista de bytes em uma string base64
-                    String base64Image = base64Encode(imageBytes);
-                    final book = Book(
-                      id: DateTime.now().millisecondsSinceEpoch,
-                      isbn: isbnController.text,
-                      title: titleController.text,
-                      author: authorController.text,
-                      publisher: publisherController.text,
-                      genre: genreController.text,
-                      publishedDate: publishedDateController.text,
-                      synopsis: synopsisController.text,
-                      subtitle: subtitleController.text,
-                      cover: base64Image,
-                    );
-                    Provider.of<BookDbHelper>(context, listen: false)
-                        .saveBook(book);
-                    Navigator.pop(context);
-                  },
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),
