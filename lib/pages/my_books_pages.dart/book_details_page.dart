@@ -149,18 +149,16 @@ class BookDetailsPage extends StatelessWidget {
                                   content: Stack(
                                     children: [
                                       SizedBox(
-                                        height: constraints.maxHeight *
-                                            0.5, // 50% da altura da tela
-                                        width: constraints.maxWidth *
-                                            0.8, // 80% da largura da tela
+                                        height: constraints.maxHeight * 0.5,
+                                        width: constraints.maxWidth * 0.8,
                                         child: SingleChildScrollView(
                                           physics:
                                               const NeverScrollableScrollPhysics(),
                                           child: Column(
                                             children: [
                                               const Padding(
-                                                padding:
-                                                    EdgeInsets.only(top: 24.0),
+                                                padding: EdgeInsets.only(
+                                                    top: 32.0, right: 16),
                                                 child: Align(
                                                   alignment:
                                                       Alignment.centerLeft,
@@ -259,6 +257,7 @@ class BookDetailsPage extends StatelessWidget {
                                       ),
                                       Positioned(
                                         right: 0,
+                                        top: 0,
                                         child: IconButton(
                                           icon: const Icon(Icons.close),
                                           onPressed: () {

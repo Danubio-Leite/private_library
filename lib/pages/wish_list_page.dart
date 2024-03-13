@@ -35,8 +35,10 @@ class WishListPage extends StatelessWidget {
                   if (snapshot.hasData) {
                     final wishes = snapshot.data;
                     if (wishes!.isEmpty) {
-                      return const Center(
-                        child: Text('No wishes yet'),
+                      return const Expanded(
+                        child: Center(
+                          child: Text('No wishes yet'),
+                        ),
                       );
                     }
                     return Expanded(
