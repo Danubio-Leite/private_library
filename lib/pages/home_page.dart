@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:private_library/components/custom_appbar.dart';
-import 'package:private_library/pages/add_book_page.dart';
-import 'package:private_library/pages/my_books_pages.dart/my_books_page.dart';
-import 'package:private_library/pages/wish_list_page.dart';
 import '../components/custom_home_button.dart';
-import 'about_app_page.dart';
-import 'contact.dart';
+import '../routes/routes.dart';
 import '../i18n/app_localizations.dart';
-import 'loans_pages/loans_page.dart';
-import 'my_ readings_page.dart';
+import 'add_book_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -31,36 +26,22 @@ class HomePage extends StatelessWidget {
                 imagePath: 'assets/images/icons/add-book.png',
                 buttonText: Localizations.of(context, AppLocalizations).addBook,
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AddBookPage(),
-                    ),
-                  );
+                  //Teste de navegação com o pushReplacementNamed
+                  Navigator.pushReplacementNamed(context, Routes.ADD_BOOK);
                 },
               ),
               CustomHomeButton(
                 imagePath: 'assets/images/icons/bookshelf.png',
                 buttonText: Localizations.of(context, AppLocalizations).myBooks,
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MyBooksPage(),
-                    ),
-                  );
+                  Navigator.of(context).pushNamed(Routes.MY_BOOKS);
                 },
               ),
               CustomHomeButton(
                 imagePath: 'assets/images/icons/desk.png',
                 buttonText: 'Minhas Leituras',
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MyReadingsPage(),
-                    ),
-                  );
+                  Navigator.of(context).pushNamed(Routes.MY_READINGS);
                 },
               ),
               CustomHomeButton(
@@ -68,35 +49,20 @@ class HomePage extends StatelessWidget {
                   buttonText:
                       Localizations.of(context, AppLocalizations).wishList,
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const WishListPage(),
-                      ),
-                    );
+                    Navigator.of(context).pushNamed(Routes.WISH_LIST);
                   }),
               CustomHomeButton(
                 imagePath: 'assets/images/icons/hand-book.png',
                 buttonText: Localizations.of(context, AppLocalizations).loans,
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoanPage(),
-                    ),
-                  );
+                  Navigator.of(context).pushNamed(Routes.LOANS);
                 },
               ),
               CustomHomeButton(
                 imagePath: 'assets/images/icons/signage.png',
                 buttonText: Localizations.of(context, AppLocalizations).contact,
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ContactPage(),
-                    ),
-                  );
+                  Navigator.of(context).pushNamed(Routes.CONTACT);
                 },
               ),
               CustomHomeButton(
@@ -104,12 +70,7 @@ class HomePage extends StatelessWidget {
                 buttonText:
                     Localizations.of(context, AppLocalizations).aboutApp,
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AboutAppPage(),
-                    ),
-                  );
+                  Navigator.of(context).pushNamed(Routes.ABOUT);
                 },
               ),
             ],

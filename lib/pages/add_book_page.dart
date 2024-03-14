@@ -12,6 +12,8 @@ import '../helpers/book_db_helper.dart';
 import '../models/book_model.dart';
 import 'dart:ui' as ui;
 
+import '../routes/routes.dart';
+
 class AddBookPage extends StatefulWidget {
   const AddBookPage({super.key});
 
@@ -93,6 +95,13 @@ class _AddBookPageState extends State<AddBookPage> {
           ),
         ],
         title: const Text('Adicionar Livro'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            // Teste de navegação com o pushReplacementNamed
+            Navigator.pushReplacementNamed(context, Routes.HOME);
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
