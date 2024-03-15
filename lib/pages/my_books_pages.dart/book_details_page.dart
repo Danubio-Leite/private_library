@@ -169,7 +169,9 @@ class BookDetailsPage extends StatelessWidget {
                                           Navigator.push(context,
                                               MaterialPageRoute(
                                             builder: (context) {
-                                              return const AddUserPage();
+                                              return const AddUserPage(
+                                                twoPop: true,
+                                              );
                                             },
                                           ));
                                         },
@@ -226,7 +228,8 @@ class BookDetailsPage extends StatelessWidget {
                                                 children: [
                                                   const Padding(
                                                     padding: EdgeInsets.only(
-                                                        top: 32.0),
+                                                      top: 32.0,
+                                                    ),
                                                     child: Align(
                                                       alignment:
                                                           Alignment.center,
@@ -272,51 +275,85 @@ class BookDetailsPage extends StatelessWidget {
                                                           } else {
                                                             final users =
                                                                 snapshot.data!;
-                                                            return Scrollbar(
-                                                              thickness: 4.0,
-                                                              radius:
-                                                                  const Radius
-                                                                      .circular(
-                                                                      5.0),
-                                                              child: ListView
-                                                                  .builder(
-                                                                itemCount: users
-                                                                    .length,
-                                                                shrinkWrap:
-                                                                    true,
-                                                                itemBuilder:
-                                                                    (_, index) {
-                                                                  return Align(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .centerLeft,
-                                                                    child:
-                                                                        ListTile(
-                                                                      title: Text(
-                                                                          users[index]
-                                                                              .name),
-                                                                      onTap:
-                                                                          () {
-                                                                        final loan =
-                                                                            Loan(
-                                                                          id: DateTime.now()
-                                                                              .millisecondsSinceEpoch,
-                                                                          user:
-                                                                              users[index],
-                                                                          book:
-                                                                              book,
-                                                                          startDateLoan:
-                                                                              DateTime.now(),
+                                                            return Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      top: 8.0),
+                                                              child: Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Scrollbar(
+                                                                    thickness:
+                                                                        4.0,
+                                                                    radius: const Radius
+                                                                        .circular(
+                                                                        5.0),
+                                                                    child: ListView
+                                                                        .builder(
+                                                                      itemCount:
+                                                                          users
+                                                                              .length,
+                                                                      shrinkWrap:
+                                                                          true,
+                                                                      itemBuilder:
+                                                                          (_, index) {
+                                                                        return Align(
+                                                                          alignment:
+                                                                              Alignment.centerLeft,
+                                                                          child:
+                                                                              ListTile(
+                                                                            title:
+                                                                                Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                Text(users[index].name),
+                                                                                const Divider(
+                                                                                  color: Colors.grey,
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                            onTap:
+                                                                                () {
+                                                                              final loan = Loan(
+                                                                                id: DateTime.now().millisecondsSinceEpoch,
+                                                                                user: users[index],
+                                                                                book: book,
+                                                                                startDateLoan: DateTime.now(),
+                                                                              );
+                                                                              Provider.of<LoanDbHelper>(context, listen: false).saveLoan(loan);
+                                                                              Navigator.pop(context);
+                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                                SnackBar(
+                                                                                  duration: const Duration(seconds: 2),
+                                                                                  backgroundColor: const Color.fromARGB(255, 77, 144, 117),
+                                                                                  content: Text('Livro Emprestado para ${users[index].name}.'),
+                                                                                ),
+                                                                              );
+                                                                            },
+                                                                          ),
                                                                         );
-                                                                        Provider.of<LoanDbHelper>(context,
-                                                                                listen: false)
-                                                                            .saveLoan(loan);
-                                                                        Navigator.pop(
-                                                                            context);
                                                                       },
                                                                     ),
-                                                                  );
-                                                                },
+                                                                  ),
+                                                                  TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator
+                                                                          .push(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              const AddUserPage(),
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                    child: const Text(
+                                                                        'Cadastrar Novo Usuário'),
+                                                                  )
+                                                                ],
                                                               ),
                                                             );
                                                           }
