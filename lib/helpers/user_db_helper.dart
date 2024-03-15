@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../models/user_model.dart';
+import 'loan_db_helper.dart';
 
 class UserDbHelper extends ChangeNotifier {
   static const _databaseName = "users.db";
@@ -52,12 +53,24 @@ class UserDbHelper extends ChangeNotifier {
     return users;
   }
 
-  Future<int> deleteUser(User user) async {
+  Future<void> deleteUser(User user) async {
     var dbClient = await db;
-    int res =
-        await dbClient.rawDelete('DELETE FROM User WHERE id = ?', [user.id]);
+    var loanDbClient = await LoanDbHelper().db;
+    var batch = dbClient.batch();
+
+    await loanDbClient.delete(
+      'Loan',
+      where: 'userId = ?',
+      whereArgs: [user.id],
+    );
+    batch.delete(
+      'User',
+      where: 'id = ?',
+      whereArgs: [user.id],
+    );
+
+    await batch.commit(noResult: true);
     notifyListeners();
-    return res;
   }
 
   Future<int> updateUser(User user) async {
