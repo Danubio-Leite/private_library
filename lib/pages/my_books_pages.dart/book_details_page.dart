@@ -84,10 +84,13 @@ class BookDetailsPage extends StatelessWidget {
                       ),
                     ),
                     Flexible(
-                      child: Image.memory(
-                        base64Decode(book.cover!),
-                        height: 200,
-                        fit: BoxFit.cover,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(2.0),
+                        child: Image.memory(
+                          base64Decode(book.cover!),
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ],
@@ -183,11 +186,12 @@ class BookDetailsPage extends StatelessWidget {
                             },
                           );
                         } else {
-                          // Verifique se o livro já está emprestado
                           final loans = await Provider.of<LoanDbHelper>(context,
                                   listen: false)
                               .getLoans();
-                          if (loans.any((loan) => loan.book.id == book.id)) {
+                          if (loans.any((loan) =>
+                              loan.book.id == book.id &&
+                              loan.endDateLoan == null)) {
                             // ignore: use_build_context_synchronously
                             showDialog(
                               context: context,
@@ -317,21 +321,63 @@ class BookDetailsPage extends StatelessWidget {
                                                                             ),
                                                                             onTap:
                                                                                 () {
-                                                                              final loan = Loan(
-                                                                                id: DateTime.now().millisecondsSinceEpoch,
-                                                                                user: users[index],
-                                                                                book: book,
-                                                                                startDateLoan: DateTime.now(),
-                                                                              );
-                                                                              Provider.of<LoanDbHelper>(context, listen: false).saveLoan(loan);
-                                                                              Navigator.pop(context);
-                                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                                SnackBar(
-                                                                                  duration: const Duration(seconds: 2),
-                                                                                  backgroundColor: const Color.fromARGB(255, 77, 144, 117),
-                                                                                  content: Text('Livro Emprestado para ${users[index].name}.'),
-                                                                                ),
-                                                                              );
+                                                                              showDialog(
+                                                                                  context: context,
+                                                                                  builder: (BuildContext context) {
+                                                                                    return AlertDialog(
+                                                                                      title: const Text(
+                                                                                        'Confirmação de Empréstimo',
+                                                                                      ),
+                                                                                      content: Text('Deseja emprestar o livro para ${users[index].name}?'),
+                                                                                      actions: [
+                                                                                        Row(
+                                                                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                          children: [
+                                                                                            TextButton(
+                                                                                              onPressed: () {
+                                                                                                Navigator.pop(context);
+                                                                                              },
+                                                                                              child: const Text('Não'),
+                                                                                            ),
+                                                                                            TextButton(
+                                                                                              onPressed: () {
+                                                                                                final loan = Loan(
+                                                                                                  id: DateTime.now().millisecondsSinceEpoch,
+                                                                                                  user: users[index],
+                                                                                                  book: book,
+                                                                                                  startDateLoan: DateTime.now(),
+                                                                                                );
+                                                                                                Provider.of<LoanDbHelper>(context, listen: false).saveLoan(loan);
+                                                                                                Navigator.pop(context);
+                                                                                                Navigator.pop(context);
+                                                                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                                                                  SnackBar(
+                                                                                                    backgroundColor: const Color.fromARGB(255, 77, 144, 117),
+                                                                                                    content: Text('Livro Emprestado para ${users[index].name}.'),
+                                                                                                  ),
+                                                                                                );
+                                                                                              },
+                                                                                              child: const Text('Sim'),
+                                                                                            ),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ],
+                                                                                    );
+                                                                                  });
+                                                                              // final loan = Loan(
+                                                                              //   id: DateTime.now().millisecondsSinceEpoch,
+                                                                              //   user: users[index],
+                                                                              //   book: book,
+                                                                              //   startDateLoan: DateTime.now(),
+                                                                              // );
+                                                                              // Provider.of<LoanDbHelper>(context, listen: false).saveLoan(loan);
+                                                                              // Navigator.pop(context);
+                                                                              // ScaffoldMessenger.of(context).showSnackBar(
+                                                                              //   SnackBar(
+                                                                              //     backgroundColor: const Color.fromARGB(255, 77, 144, 117),
+                                                                              //     content: Text('Livro Emprestado para ${users[index].name}.'),
+                                                                              //   ),
+                                                                              // );
                                                                             },
                                                                           ),
                                                                         );
