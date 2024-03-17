@@ -287,7 +287,7 @@ class _AddBookPageState extends State<AddBookPage> {
                         );
                         Provider.of<BookDbHelper>(context, listen: false)
                             .saveBook(book);
-                        Navigator.pop(context);
+                        Navigator.pushReplacementNamed(context, Routes.HOME);
                       }
                     },
                   ),

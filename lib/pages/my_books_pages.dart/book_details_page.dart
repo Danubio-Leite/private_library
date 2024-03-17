@@ -84,10 +84,13 @@ class BookDetailsPage extends StatelessWidget {
                       ),
                     ),
                     Flexible(
-                      child: Image.memory(
-                        base64Decode(book.cover!),
-                        height: 200,
-                        fit: BoxFit.cover,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(2.0),
+                        child: Image.memory(
+                          base64Decode(book.cover!),
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ],
@@ -183,11 +186,12 @@ class BookDetailsPage extends StatelessWidget {
                             },
                           );
                         } else {
-                          // Verifique se o livro já está emprestado
                           final loans = await Provider.of<LoanDbHelper>(context,
                                   listen: false)
                               .getLoans();
-                          if (loans.any((loan) => loan.book.id == book.id)) {
+                          if (loans.any((loan) =>
+                              loan.book.id == book.id &&
+                              loan.endDateLoan == null)) {
                             // ignore: use_build_context_synchronously
                             showDialog(
                               context: context,
@@ -317,21 +321,49 @@ class BookDetailsPage extends StatelessWidget {
                                                                             ),
                                                                             onTap:
                                                                                 () {
-                                                                              final loan = Loan(
-                                                                                id: DateTime.now().millisecondsSinceEpoch,
-                                                                                user: users[index],
-                                                                                book: book,
-                                                                                startDateLoan: DateTime.now(),
-                                                                              );
-                                                                              Provider.of<LoanDbHelper>(context, listen: false).saveLoan(loan);
-                                                                              Navigator.pop(context);
-                                                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                                                SnackBar(
-                                                                                  duration: const Duration(seconds: 2),
-                                                                                  backgroundColor: const Color.fromARGB(255, 77, 144, 117),
-                                                                                  content: Text('Livro Emprestado para ${users[index].name}.'),
-                                                                                ),
-                                                                              );
+                                                                              showDialog(
+                                                                                  context: context,
+                                                                                  builder: (BuildContext context) {
+                                                                                    return AlertDialog(
+                                                                                      title: const Text(
+                                                                                        'Confirmação de Empréstimo',
+                                                                                      ),
+                                                                                      content: Text('Deseja emprestar o livro para ${users[index].name}?'),
+                                                                                      actions: [
+                                                                                        Row(
+                                                                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                          children: [
+                                                                                            TextButton(
+                                                                                              onPressed: () {
+                                                                                                Navigator.pop(context);
+                                                                                              },
+                                                                                              child: const Text('Não'),
+                                                                                            ),
+                                                                                            TextButton(
+                                                                                              onPressed: () {
+                                                                                                final loan = Loan(
+                                                                                                  id: DateTime.now().millisecondsSinceEpoch,
+                                                                                                  user: users[index],
+                                                                                                  book: book,
+                                                                                                  startDateLoan: DateTime.now(),
+                                                                                                );
+                                                                                                Provider.of<LoanDbHelper>(context, listen: false).saveLoan(loan);
+                                                                                                Navigator.pop(context);
+                                                                                                Navigator.pop(context);
+                                                                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                                                                  SnackBar(
+                                                                                                    backgroundColor: const Color.fromARGB(255, 77, 144, 117),
+                                                                                                    content: Text('Livro Emprestado para ${users[index].name}.'),
+                                                                                                  ),
+                                                                                                );
+                                                                                              },
+                                                                                              child: const Text('Sim'),
+                                                                                            ),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ],
+                                                                                    );
+                                                                                  });
                                                                             },
                                                                           ),
                                                                         );
@@ -392,64 +424,122 @@ class BookDetailsPage extends StatelessWidget {
                   Expanded(
                     child: CustomButton(
                       onPressed: () async {
+                        final users = await Provider.of<UserDbHelper>(context,
+                                listen: false)
+                            .getUsers();
+
                         final loans = await Provider.of<LoanDbHelper>(context,
                                 listen: false)
                             .getLoans();
-                        if (loans.any((loan) => loan.book.id == book.id)) {
+
+                        final readings = await Provider.of<ReadingDbHelper>(
+                                context,
+                                listen: false)
+                            .getReadings();
+                        if (loans.any((loan) =>
+                            loan.book.id == book.id &&
+                            loan.endDateLoan == null)) {
                           // ignore: use_build_context_synchronously
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                content: Stack(
-                                  children: [
-                                    const Padding(
-                                      padding: EdgeInsets.only(top: 24.0),
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          'Livro Emprestado',
-                                          style: TextStyle(
-                                              fontSize: 21,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    ),
-                                    CustomButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      texto: 'OK',
-                                    ),
-                                  ],
-                                ),
+                                title: const Text('Livro emprestado'),
+                                content: const Text(
+                                    'Este livro está emprestado. Registre a devolução antes de iniciar a leitura.'),
+                                actions: [
+                                  TextButton(
+                                    child: const Text('OK'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
                               );
                             },
                           );
+                        } else if (readings.any((reading) =>
+                            reading.book.id == book.id &&
+                            reading.endDateReading == null)) {
+                          // ignore: use_build_context_synchronously
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Leitura em andamento'),
+                                  content: const Text(
+                                      'Você já está lendo este livro. Deseja registrar o término da leitura?'),
+                                  actions: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Não'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            final reading = readings.firstWhere(
+                                                (reading) =>
+                                                    reading.book.id ==
+                                                        book.id &&
+                                                    reading.endDateReading ==
+                                                        null);
+                                            reading.endDateReading =
+                                                DateTime.now();
+                                            Provider.of<ReadingDbHelper>(
+                                                    context,
+                                                    listen: false)
+                                                .updateReading(reading);
+                                            Navigator.pop(context);
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                backgroundColor:
+                                                    const Color.fromARGB(
+                                                        255, 77, 144, 117),
+                                                content: Text(
+                                                    'Registrado o término da leitura de ${book.title}.'),
+                                              ),
+                                            );
+                                          },
+                                          child: const Text('Sim'),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              });
                         } else {
                           // ignore: use_build_context_synchronously
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                content: Stack(
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Padding(
-                                      padding: EdgeInsets.only(top: 24.0),
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          'Deseja iniciar a leitura?',
-                                          style: TextStyle(
-                                              fontSize: 21,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
+                                    const Text(
+                                      'Deseja iniciar a leitura?',
+                                      style: TextStyle(
+                                          fontSize: 21,
+                                          fontWeight: FontWeight.bold),
                                     ),
+                                    const SizedBox(height: 16),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        CustomButton(
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Não'),
+                                        ),
+                                        TextButton(
                                           onPressed: () {
                                             final reading = Reading(
                                               id: DateTime.now()
@@ -462,15 +552,18 @@ class BookDetailsPage extends StatelessWidget {
                                                     listen: false)
                                                 .saveReading(reading);
                                             Navigator.pop(context);
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                backgroundColor:
+                                                    const Color.fromARGB(
+                                                        255, 77, 144, 117),
+                                                content: Text(
+                                                    'Registrado o início da leitura de ${book.title}.'),
+                                              ),
+                                            );
                                           },
-                                          texto: 'Sim',
-                                        ),
-                                        const SizedBox(width: 16),
-                                        CustomButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          texto: 'Não',
+                                          child: const Text('Sim'),
                                         ),
                                       ],
                                     ),
