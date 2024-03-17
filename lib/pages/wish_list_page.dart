@@ -15,7 +15,7 @@ class WishListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Wish List'),
+        title: const Text('Wish List'),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromARGB(255, 109, 149, 169),
@@ -128,18 +128,20 @@ class WishListPage extends StatelessWidget {
     final authorController = TextEditingController();
     return AlertDialog(
       title: const Text('Add a wish'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: titleController,
-            decoration: const InputDecoration(labelText: 'Title'),
-          ),
-          TextField(
-            controller: authorController,
-            decoration: const InputDecoration(labelText: 'Author'),
-          ),
-        ],
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleController,
+              decoration: const InputDecoration(labelText: 'Title'),
+            ),
+            TextField(
+              controller: authorController,
+              decoration: const InputDecoration(labelText: 'Author'),
+            ),
+          ],
+        ),
       ),
       actions: [
         TextButton(

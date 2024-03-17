@@ -174,7 +174,7 @@ class _AddBookPageState extends State<AddBookPage> {
                   label: 'Título',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, insira um título';
+                      return 'Campo obrigatório, insira o título da obra';
                     }
                     return null;
                   },
@@ -190,7 +190,7 @@ class _AddBookPageState extends State<AddBookPage> {
                   label: 'Autor',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, insira um autor';
+                      return 'Campo obrigatório, insira o nome do autor';
                     }
                     return null;
                   },

@@ -169,35 +169,37 @@ class _UsersPageState extends State<UsersPage> {
                                               return AlertDialog(
                                                 title: const Text(
                                                     'Editar usuário'),
-                                                content: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    TextField(
-                                                      controller:
-                                                          nameController,
-                                                      decoration:
-                                                          const InputDecoration(
-                                                        labelText: 'Nome',
+                                                content: SingleChildScrollView(
+                                                  child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      TextField(
+                                                        controller:
+                                                            nameController,
+                                                        decoration:
+                                                            const InputDecoration(
+                                                          labelText: 'Nome',
+                                                        ),
                                                       ),
-                                                    ),
-                                                    TextField(
-                                                      controller:
-                                                          phoneController,
-                                                      decoration:
-                                                          const InputDecoration(
-                                                        labelText: 'Telefone',
+                                                      TextField(
+                                                        controller:
+                                                            phoneController,
+                                                        decoration:
+                                                            const InputDecoration(
+                                                          labelText: 'Telefone',
+                                                        ),
                                                       ),
-                                                    ),
-                                                    TextField(
-                                                      controller:
-                                                          emailController,
-                                                      decoration:
-                                                          const InputDecoration(
-                                                        labelText: 'Email',
+                                                      TextField(
+                                                        controller:
+                                                            emailController,
+                                                        decoration:
+                                                            const InputDecoration(
+                                                          labelText: 'Email',
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
                                                 actions: [
                                                   Row(
