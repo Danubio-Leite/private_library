@@ -189,6 +189,10 @@ class BookDetailsPage extends StatelessWidget {
                           final loans = await Provider.of<LoanDbHelper>(context,
                                   listen: false)
                               .getLoans();
+                          final readings = await Provider.of<ReadingDbHelper>(
+                                  context,
+                                  listen: false)
+                              .getReadings();
                           if (loans.any((loan) =>
                               loan.book.id == book.id &&
                               loan.endDateLoan == null)) {
@@ -211,6 +215,61 @@ class BookDetailsPage extends StatelessWidget {
                                 );
                               },
                             );
+                          } else if (readings.any((reading) =>
+                              reading.book.id == book.id &&
+                              reading.endDateReading == null)) {
+                            // ignore: use_build_context_synchronously
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Leitura em andamento'),
+                                    content: const Text(
+                                        'Você está lendo este livro. Deseja registrar o término da leitura?'),
+                                    actions: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Text('Não'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              final reading = readings
+                                                  .firstWhere((reading) =>
+                                                      reading.book.id ==
+                                                          book.id &&
+                                                      reading.endDateReading ==
+                                                          null);
+                                              reading.endDateReading =
+                                                  DateTime.now();
+                                              Provider.of<ReadingDbHelper>(
+                                                      context,
+                                                      listen: false)
+                                                  .updateReading(reading);
+                                              Navigator.pop(context);
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  backgroundColor:
+                                                      const Color.fromARGB(
+                                                          255, 77, 144, 117),
+                                                  content: Text(
+                                                      'Registrado o término da leitura de ${book.title}.'),
+                                                ),
+                                              );
+                                            },
+                                            child: const Text('Sim'),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  );
+                                });
                           } else {
                             // ignore: use_build_context_synchronously
                             showDialog(

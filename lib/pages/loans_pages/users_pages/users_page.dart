@@ -1,5 +1,6 @@
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 import '../../../helpers/user_db_helper.dart';
 import '../../../models/user_model.dart';
@@ -68,6 +69,15 @@ class _UsersPageState extends State<UsersPage> {
                                 .toLowerCase()
                                 .contains(_searchText.toLowerCase());
                       }).toList();
+
+                      if (users.isEmpty) {
+                        return const Expanded(
+                          child: Center(
+                            child: Text('Nenhum usuário cadastrado'),
+                          ),
+                        );
+                      }
+
                       return Expanded(
                         child: ListView.builder(
                           itemCount: users.length,
@@ -126,7 +136,7 @@ class _UsersPageState extends State<UsersPage> {
                                                       if (users[index].phone !=
                                                           null)
                                                         Text(
-                                                            'Telefone: ${users[index].phone ?? ''}'),
+                                                            'Whatsapp: ${users[index].phone ?? ''}'),
                                                       if (users[index].email !=
                                                           null)
                                                         Text(
@@ -182,17 +192,32 @@ class _UsersPageState extends State<UsersPage> {
                                                           labelText: 'Nome',
                                                         ),
                                                       ),
-                                                      TextField(
+                                                      TextFormField(
+                                                        inputFormatters: [
+                                                          MaskTextInputFormatter(
+                                                            mask:
+                                                                '(##) #####-####',
+                                                            filter: {
+                                                              "#": RegExp(
+                                                                  r'[0-9]')
+                                                            },
+                                                          ),
+                                                        ],
+                                                        keyboardType:
+                                                            TextInputType.phone,
                                                         controller:
                                                             phoneController,
                                                         decoration:
                                                             const InputDecoration(
-                                                          labelText: 'Telefone',
+                                                          labelText: 'Whatsapp',
                                                         ),
                                                       ),
                                                       TextField(
                                                         controller:
                                                             emailController,
+                                                        keyboardType:
+                                                            TextInputType
+                                                                .emailAddress,
                                                         decoration:
                                                             const InputDecoration(
                                                           labelText: 'Email',

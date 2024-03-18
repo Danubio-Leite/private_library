@@ -105,6 +105,15 @@ class _MyReadingsPageState extends State<MyReadingsPage> {
                         ? reading.endDateReading != null
                         : reading.endDateReading == null;
                   }).toList();
+
+                  if (filteredReadings.isEmpty) {
+                    return Center(
+                      child: Text(showFinishedReadings
+                          ? 'Nenhuma leitura finalizada.'
+                          : 'Nenhuma leitura em andamento.'),
+                    );
+                  }
+
                   return ListView.builder(
                     itemCount: filteredReadings.length,
                     itemBuilder: (context, index) {

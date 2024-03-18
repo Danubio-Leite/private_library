@@ -101,6 +101,14 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
                         ? loan.endDateLoan != null
                         : loan.endDateLoan == null;
                   }).toList();
+
+                  if (filteredBooks.isEmpty) {
+                    return Center(
+                      child: Text(showReturnedBooks
+                          ? 'No returned books'
+                          : 'No borrowed books'),
+                    );
+                  }
                   return ListView.builder(
                     itemCount: filteredBooks.length,
                     itemBuilder: (context, index) {
