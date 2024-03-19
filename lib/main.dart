@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
         AppLocalizations.delegate, // Add AppLocalizations delegate
         GlobalMaterialLocalizations.delegate,

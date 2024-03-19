@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:private_library/components/custom_button.dart';
 import 'package:private_library/components/custom_textformfield.dart';
 import 'package:provider/provider.dart';
@@ -50,10 +51,19 @@ class _AddUserPageState extends State<AddUserPage> {
               CustomFormField(label: 'Nome', controller: nameController),
               const SizedBox(height: 10),
               CustomFormField(
-                  label: 'Telefone (opcional)', controller: phoneController),
+                maskFormatter: MaskTextInputFormatter(
+                  mask: '(##) #####-####',
+                  filter: {"#": RegExp(r'[0-9]')},
+                ),
+                keyboardType: TextInputType.phone,
+                label: 'Whatsapp (Opcional)',
+                controller: phoneController,
+              ),
               const SizedBox(height: 10),
               CustomFormField(
-                  label: 'Email (opcional)', controller: emailController),
+                  keyboardType: TextInputType.emailAddress,
+                  label: 'Email (opcional)',
+                  controller: emailController),
               const SizedBox(height: 10),
               SizedBox(
                 width: double.infinity,

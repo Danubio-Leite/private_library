@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/reading_db_helper.dart';
@@ -104,6 +105,15 @@ class _MyReadingsPageState extends State<MyReadingsPage> {
                         ? reading.endDateReading != null
                         : reading.endDateReading == null;
                   }).toList();
+
+                  if (filteredReadings.isEmpty) {
+                    return Center(
+                      child: Text(showFinishedReadings
+                          ? 'Nenhuma leitura finalizada.'
+                          : 'Nenhuma leitura em andamento.'),
+                    );
+                  }
+
                   return ListView.builder(
                     itemCount: filteredReadings.length,
                     itemBuilder: (context, index) {
@@ -125,16 +135,20 @@ class _MyReadingsPageState extends State<MyReadingsPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                            'Início da leitura: ${reading.startDateReading}'),
+                                            'Início da leitura: ${DateFormat('dd/MM/yyyy').format(reading.startDateReading)}'),
+                                        const SizedBox(height: 10),
                                         if (reading.endDateReading != null)
                                           Text(
-                                              'Fim: ${reading.endDateReading}'),
+                                            'Fim: ${DateFormat('dd/MM/yyyy').format(reading.endDateReading!)}',
+                                          ),
                                         if (reading.readingNote != null)
                                           Text('Nota: ${reading.readingNote}'),
                                       ],
                                     ),
                                     actions: [
                                       Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
                                         children: [
                                           TextButton(
                                             onPressed: () {

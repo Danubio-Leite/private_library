@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../helpers/loan_db_helper.dart';
@@ -100,6 +101,14 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
                         ? loan.endDateLoan != null
                         : loan.endDateLoan == null;
                   }).toList();
+
+                  if (filteredBooks.isEmpty) {
+                    return Center(
+                      child: Text(showReturnedBooks
+                          ? 'No returned books'
+                          : 'No borrowed books'),
+                    );
+                  }
                   return ListView.builder(
                     itemCount: filteredBooks.length,
                     itemBuilder: (context, index) {
@@ -121,12 +130,14 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Text(
-                                              'Emprestado para:${loan.user.name}'),
+                                              'Emprestado para: ${loan.user.name}'),
+                                          const SizedBox(height: 10),
                                           Text(
-                                              'Data de empréstimo: ${loan.startDateLoan}'),
+                                              'Emprestado em: ${DateFormat('dd/MM/yyyy').format(loan.startDateLoan)}'),
+                                          const SizedBox(height: 10),
                                           if (loan.endDateLoan != null)
                                             Text(
-                                                'Data de devolução: ${loan.endDateLoan}'),
+                                                'Devolvido em: ${DateFormat('dd/MM/yyyy').format(loan.endDateLoan!)}'),
                                         ],
                                       ),
                                       actions: [

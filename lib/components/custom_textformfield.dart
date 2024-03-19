@@ -44,8 +44,8 @@ class CustomFormField extends StatelessWidget {
       controller: controller,
       onChanged: onChanged,
       keyboardType: keyboardType,
-      inputFormatters: inputFormatters,
-      // inputFormatters: maskFormatter != null ? [maskFormatter!] : [],
+      // inputFormatters: inputFormatters,
+      inputFormatters: maskFormatter != null ? [maskFormatter!] : [],
       decoration: InputDecoration(
         labelText: label,
         border: const OutlineInputBorder(),
