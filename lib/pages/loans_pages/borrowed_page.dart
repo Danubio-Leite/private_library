@@ -19,7 +19,7 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Borrowed Books'),
+        title: const Text('Lended Books'),
       ),
       body: Column(
         children: [
@@ -93,7 +93,7 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
                   final borrowedBooks = snapshot.data;
                   if (borrowedBooks!.isEmpty) {
                     return const Center(
-                      child: Text('No borrowed books'),
+                      child: Text('No Lended Books'),
                     );
                   }
                   final filteredBooks = borrowedBooks.where((loan) {
@@ -106,7 +106,7 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
                     return Center(
                       child: Text(showReturnedBooks
                           ? 'No returned books'
-                          : 'No borrowed books'),
+                          : 'No Lended Books'),
                     );
                   }
                   return ListView.builder(
