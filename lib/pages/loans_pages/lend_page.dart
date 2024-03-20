@@ -188,7 +188,7 @@ class _LendPageState extends State<LendPage> {
                                       } else
                                         customDialogBox(
                                             context,
-                                            'Escolha um usuário para emprestar o livro.',
+                                            'Escolha um usuário para emprestar o livro:',
                                             book,
                                             SizedBox(
                                               height: MediaQuery.of(context)
@@ -236,26 +236,46 @@ class _LendPageState extends State<LendPage> {
                                                                     users[index]
                                                                         .name),
                                                                 onTap: () {
-                                                                  final loan =
-                                                                      Loan(
-                                                                    id: DateTime
-                                                                            .now()
-                                                                        .millisecondsSinceEpoch,
-                                                                    user: users[
-                                                                        index],
-                                                                    book: book,
-                                                                    startDateLoan:
-                                                                        DateTime
-                                                                            .now(),
-                                                                  );
-                                                                  Provider.of<LoanDbHelper>(
-                                                                          context,
-                                                                          listen:
-                                                                              false)
-                                                                      .saveLoan(
-                                                                          loan);
-                                                                  Navigator.pop(
-                                                                      context);
+                                                                  customDialogBox(
+                                                                      context,
+                                                                      'Confirmação de Empréstimo',
+                                                                      book,
+                                                                      Text(
+                                                                          'Deseja emprestar o livro para ${users[index].name}?'),
+                                                                      [
+                                                                        Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceEvenly,
+                                                                          children: [
+                                                                            TextButton(
+                                                                              onPressed: () {
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              child: const Text('Não'),
+                                                                            ),
+                                                                            TextButton(
+                                                                              onPressed: () {
+                                                                                final loan = Loan(
+                                                                                  id: DateTime.now().millisecondsSinceEpoch,
+                                                                                  user: users[index],
+                                                                                  book: book,
+                                                                                  startDateLoan: DateTime.now(),
+                                                                                );
+                                                                                Provider.of<LoanDbHelper>(context, listen: false).saveLoan(loan);
+                                                                                Navigator.pop(context);
+                                                                                Navigator.pop(context);
+                                                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                                                  SnackBar(
+                                                                                    backgroundColor: const Color.fromARGB(255, 77, 144, 117),
+                                                                                    content: Text('Livro Emprestado para ${users[index].name}.'),
+                                                                                  ),
+                                                                                );
+                                                                              },
+                                                                              child: const Text('Sim'),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ]);
                                                                 },
                                                               ),
                                                             );
@@ -268,27 +288,42 @@ class _LendPageState extends State<LendPage> {
                                               ),
                                             ),
                                             [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: const Text('Cancelar'),
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) {
-                                                        return const AddUserPage(
-                                                          twoPop: true,
+                                              SingleChildScrollView(
+                                                physics:
+                                                    const NeverScrollableScrollPhysics(),
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: const Text(
+                                                          'Cancelar'),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) {
+                                                              return const AddUserPage(
+                                                                twoPop: true,
+                                                              );
+                                                            },
+                                                          ),
                                                         );
                                                       },
+                                                      child: const Text(
+                                                          'Cadastrar Novo'),
                                                     ),
-                                                  );
-                                                },
-                                                child: const Text('Cadastrar'),
+                                                  ],
+                                                ),
                                               ),
                                             ]);
                                     }

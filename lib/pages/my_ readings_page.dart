@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:private_library/components/custom_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:awesome_icons/awesome_icons.dart';
 
 import '../helpers/reading_db_helper.dart';
 import '../models/reading_model.dart';
@@ -124,59 +126,151 @@ class _MyReadingsPageState extends State<MyReadingsPage> {
                             title: Text(reading.book.title),
                             subtitle: Text(reading.book.author),
                             onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: Text(reading.book.title),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
+                              customDialogBox(
+                                  context,
+                                  reading.book.title,
+                                  reading.book,
+                                  Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          'Início da leitura: ${DateFormat('dd/MM/yyyy').format(reading.startDateReading)}'),
+                                      const SizedBox(height: 10),
+                                      if (reading.endDateReading != null)
                                         Text(
-                                            'Início da leitura: ${DateFormat('dd/MM/yyyy').format(reading.startDateReading)}'),
-                                        const SizedBox(height: 10),
-                                        if (reading.endDateReading != null)
-                                          Text(
-                                            'Fim: ${DateFormat('dd/MM/yyyy').format(reading.endDateReading!)}',
-                                          ),
-                                        if (reading.readingNote != null)
-                                          Text('Nota: ${reading.readingNote}'),
-                                      ],
-                                    ),
-                                    actions: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
+                                          'Fim: ${DateFormat('dd/MM/yyyy').format(reading.endDateReading!)}',
+                                        ),
+                                      if (reading.readingNote != null)
+                                        Text('Nota: ${reading.readingNote}'),
+                                    ],
+                                  ),
+                                  [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Fechar'),
+                                        ),
+                                        if (reading.endDateReading == null)
                                           TextButton(
-                                            onPressed: () {
+                                            onPressed: () async {
+                                              reading.endDateReading =
+                                                  DateTime.now();
+                                              Provider.of<ReadingDbHelper>(
+                                                      context,
+                                                      listen: false)
+                                                  .updateReading(reading);
+                                              setState(() {});
                                               Navigator.pop(context);
                                             },
-                                            child: const Text('Fechar'),
+                                            child: const Text('Finalizar'),
                                           ),
-                                          if (reading.endDateReading == null)
-                                            TextButton(
-                                              onPressed: () async {
-                                                reading.endDateReading =
-                                                    DateTime.now();
-                                                Provider.of<ReadingDbHelper>(
-                                                        context,
-                                                        listen: false)
-                                                    .updateReading(reading);
-                                                setState(() {});
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text('Finalizar'),
+                                      ],
+                                    ),
+                                  ]);
+                            },
+                            trailing: IconButton(
+                              icon: Icon(
+                                reading.endDateReading == null
+                                    ? FontAwesomeIcons.bookOpen
+                                    : FontAwesomeIcons.book,
+                                color: reading.endDateReading == null
+                                    ? Colors.blueGrey
+                                    : Colors.blueGrey,
+                              ),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text(reading.book.title),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                              'Início da leitura: ${DateFormat('dd/MM/yyyy').format(reading.startDateReading)}'),
+                                          const SizedBox(height: 10),
+                                          if (reading.endDateReading != null)
+                                            Text(
+                                              'Fim: ${DateFormat('dd/MM/yyyy').format(reading.endDateReading!)}',
                                             ),
+                                          if (reading.readingNote != null)
+                                            Text(
+                                                'Nota: ${reading.readingNote}'),
                                         ],
                                       ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
+                                      actions: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text('Fechar'),
+                                            ),
+                                            if (reading.endDateReading == null)
+                                              TextButton(
+                                                onPressed: () {
+                                                  customDialogBox(
+                                                    context,
+                                                    'Confirma o fim da leitura?',
+                                                    reading.book,
+                                                    const Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Text(
+                                                            'Deseja realmente finalizar a leitura?'),
+                                                      ],
+                                                    ),
+                                                    [
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: const Text(
+                                                            'Cancelar'),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () async {
+                                                          reading.endDateReading =
+                                                              DateTime.now();
+                                                          Provider.of<ReadingDbHelper>(
+                                                                  context,
+                                                                  listen: false)
+                                                              .updateReading(
+                                                                  reading);
+                                                          setState(() {});
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: const Text(
+                                                            'Finalizar'),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                                child: const Text('Finalizar'),
+                                              ),
+                                          ],
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            ),
                           ),
                           const Divider(
                             height: 0,
