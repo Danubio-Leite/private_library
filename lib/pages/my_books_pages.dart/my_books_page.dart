@@ -174,29 +174,26 @@ class _MyBooksPageState extends State<MyBooksPage> {
                               return Column(
                                 children: [
                                   ListTile(
-                                    leading:
-                                        _selectionMode // se o modo de seleção estiver ativo, mostrar o checkbox
-                                            ? Checkbox(
-                                                value: selectedBooks
-                                                    .contains(books[index]),
-                                                onChanged: (selected) {
-                                                  if (selected ?? false) {
-                                                    selectedBooks
-                                                        .add(books[index]);
-                                                  } else {
-                                                    selectedBooks
-                                                        .remove(books[index]);
-                                                  }
-                                                  _selectedBooks.value =
-                                                      List.from(selectedBooks);
-                                                },
-                                              )
-                                            : null,
+                                    leading: _selectionMode
+                                        ? Checkbox(
+                                            value: selectedBooks
+                                                .contains(books[index]),
+                                            onChanged: (selected) {
+                                              if (selected ?? false) {
+                                                selectedBooks.add(books[index]);
+                                              } else {
+                                                selectedBooks
+                                                    .remove(books[index]);
+                                              }
+                                              _selectedBooks.value =
+                                                  List.from(selectedBooks);
+                                            },
+                                          )
+                                        : null,
                                     title: Text(books[index].title),
                                     subtitle: Text(books[index].author),
                                     onTap: () {
                                       if (_selectionMode) {
-                                        // se o modo de seleção estiver ativo, selecionar ou desmarcar o livro
                                         if (selectedBooks
                                             .contains(books[index])) {
                                           selectedBooks.remove(books[index]);

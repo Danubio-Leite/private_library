@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:private_library/components/custom_button.dart';
 import 'package:provider/provider.dart';
 
+import '../../components/custom_dialog.dart';
 import '../../helpers/loan_db_helper.dart';
 import '../../helpers/reading_db_helper.dart';
 import '../../helpers/user_db_helper.dart';
@@ -147,7 +150,6 @@ class BookDetailsPage extends StatelessWidget {
                                 listen: false)
                             .getUsers();
                         if (users.isEmpty) {
-                          // ignore: use_build_context_synchronously
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -196,7 +198,6 @@ class BookDetailsPage extends StatelessWidget {
                           if (loans.any((loan) =>
                               loan.book.id == book.id &&
                               loan.endDateLoan == null)) {
-                            // ignore: use_build_context_synchronously
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -218,7 +219,6 @@ class BookDetailsPage extends StatelessWidget {
                           } else if (readings.any((reading) =>
                               reading.book.id == book.id &&
                               reading.endDateReading == null)) {
-                            // ignore: use_build_context_synchronously
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -271,208 +271,160 @@ class BookDetailsPage extends StatelessWidget {
                                   );
                                 });
                           } else {
-                            // ignore: use_build_context_synchronously
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return LayoutBuilder(
-                                  builder: (BuildContext context,
-                                      BoxConstraints constraints) {
-                                    return AlertDialog(
-                                      content: Stack(
-                                        children: [
-                                          SizedBox(
-                                            height: constraints.maxHeight * 0.5,
-                                            width: constraints.maxWidth * 0.8,
-                                            child: SingleChildScrollView(
-                                              physics:
-                                                  const NeverScrollableScrollPhysics(),
-                                              child: Column(
-                                                children: [
-                                                  const Padding(
-                                                    padding: EdgeInsets.only(
-                                                      top: 32.0,
-                                                    ),
-                                                    child: Align(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      child: Text(
-                                                        'O livro está sendo emprestado para:',
-                                                        style: TextStyle(
-                                                            fontSize: 21,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ),
+                            customDialogBox(
+                                context,
+                                'Escolha um usuário para emprestar o livro:',
+                                book,
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.3,
+                                  child: FutureBuilder<List<User>>(
+                                    future: Provider.of<UserDbHelper>(context,
+                                            listen: false)
+                                        .getUsers(),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<List<User>> snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const Center(
+                                            child: CircularProgressIndicator());
+                                      } else {
+                                        if (snapshot.hasError) {
+                                          return Center(
+                                              child: Text(
+                                                  'Erro: ${snapshot.error}'));
+                                        } else {
+                                          final users = snapshot.data!;
+                                          return Scrollbar(
+                                            thickness: 4.0,
+                                            radius: const Radius.circular(5.0),
+                                            child: ListView.builder(
+                                              itemCount: users.length,
+                                              shrinkWrap: true,
+                                              itemBuilder: (_, index) {
+                                                return Align(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: ListTile(
+                                                    title:
+                                                        Text(users[index].name),
+                                                    onTap: () {
+                                                      customDialogBox(
+                                                          context,
+                                                          'Confirmação de Empréstimo',
+                                                          book,
+                                                          Text(
+                                                              'Deseja emprestar o livro para ${users[index].name}?'),
+                                                          [
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceEvenly,
+                                                              children: [
+                                                                TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  },
+                                                                  child:
+                                                                      const Text(
+                                                                          'Não'),
+                                                                ),
+                                                                TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    final loan =
+                                                                        Loan(
+                                                                      id: DateTime
+                                                                              .now()
+                                                                          .millisecondsSinceEpoch,
+                                                                      user: users[
+                                                                          index],
+                                                                      book:
+                                                                          book,
+                                                                      startDateLoan:
+                                                                          DateTime
+                                                                              .now(),
+                                                                    );
+                                                                    Provider.of<LoanDbHelper>(
+                                                                            context,
+                                                                            listen:
+                                                                                false)
+                                                                        .saveLoan(
+                                                                            loan);
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                    ScaffoldMessenger.of(
+                                                                            context)
+                                                                        .showSnackBar(
+                                                                      SnackBar(
+                                                                        backgroundColor: const Color
+                                                                            .fromARGB(
+                                                                            255,
+                                                                            77,
+                                                                            144,
+                                                                            117),
+                                                                        content:
+                                                                            Text('Livro Emprestado para ${users[index].name}.'),
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                  child:
+                                                                      const Text(
+                                                                          'Sim'),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ]);
+                                                    },
                                                   ),
-                                                  SizedBox(
-                                                    height: constraints
-                                                            .maxHeight *
-                                                        0.4, // 40% da altura da tela
-                                                    child: FutureBuilder<
-                                                        List<User>>(
-                                                      future: Provider.of<
-                                                                  UserDbHelper>(
-                                                              context,
-                                                              listen: false)
-                                                          .getUsers(),
-                                                      builder: (BuildContext
-                                                              context,
-                                                          AsyncSnapshot<
-                                                                  List<User>>
-                                                              snapshot) {
-                                                        if (snapshot
-                                                                .connectionState ==
-                                                            ConnectionState
-                                                                .waiting) {
-                                                          return const Center(
-                                                              child:
-                                                                  CircularProgressIndicator());
-                                                        } else {
-                                                          if (snapshot
-                                                              .hasError) {
-                                                            return Center(
-                                                                child: Text(
-                                                                    'Erro: ${snapshot.error}'));
-                                                          } else {
-                                                            final users =
-                                                                snapshot.data!;
-                                                            return Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      top: 8.0),
-                                                              child: Column(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Scrollbar(
-                                                                    thickness:
-                                                                        4.0,
-                                                                    radius: const Radius
-                                                                        .circular(
-                                                                        5.0),
-                                                                    child: ListView
-                                                                        .builder(
-                                                                      itemCount:
-                                                                          users
-                                                                              .length,
-                                                                      shrinkWrap:
-                                                                          true,
-                                                                      itemBuilder:
-                                                                          (_, index) {
-                                                                        return Align(
-                                                                          alignment:
-                                                                              Alignment.centerLeft,
-                                                                          child:
-                                                                              ListTile(
-                                                                            title:
-                                                                                Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                Text(users[index].name),
-                                                                                const Divider(
-                                                                                  color: Colors.grey,
-                                                                                )
-                                                                              ],
-                                                                            ),
-                                                                            onTap:
-                                                                                () {
-                                                                              showDialog(
-                                                                                  context: context,
-                                                                                  builder: (BuildContext context) {
-                                                                                    return AlertDialog(
-                                                                                      title: const Text(
-                                                                                        'Confirmação de Empréstimo',
-                                                                                      ),
-                                                                                      content: Text('Deseja emprestar o livro para ${users[index].name}?'),
-                                                                                      actions: [
-                                                                                        Row(
-                                                                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                                                          children: [
-                                                                                            TextButton(
-                                                                                              onPressed: () {
-                                                                                                Navigator.pop(context);
-                                                                                              },
-                                                                                              child: const Text('Não'),
-                                                                                            ),
-                                                                                            TextButton(
-                                                                                              onPressed: () {
-                                                                                                final loan = Loan(
-                                                                                                  id: DateTime.now().millisecondsSinceEpoch,
-                                                                                                  user: users[index],
-                                                                                                  book: book,
-                                                                                                  startDateLoan: DateTime.now(),
-                                                                                                );
-                                                                                                Provider.of<LoanDbHelper>(context, listen: false).saveLoan(loan);
-                                                                                                Navigator.pop(context);
-                                                                                                Navigator.pop(context);
-                                                                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                                                                  SnackBar(
-                                                                                                    backgroundColor: const Color.fromARGB(255, 77, 144, 117),
-                                                                                                    content: Text('Livro Emprestado para ${users[index].name}.'),
-                                                                                                  ),
-                                                                                                );
-                                                                                              },
-                                                                                              child: const Text('Sim'),
-                                                                                            ),
-                                                                                          ],
-                                                                                        ),
-                                                                                      ],
-                                                                                    );
-                                                                                  });
-                                                                            },
-                                                                          ),
-                                                                        );
-                                                                      },
-                                                                    ),
-                                                                  ),
-                                                                  TextButton(
-                                                                    onPressed:
-                                                                        () {
-                                                                      Navigator
-                                                                          .push(
-                                                                        context,
-                                                                        MaterialPageRoute(
-                                                                          builder: (context) =>
-                                                                              const AddUserPage(),
-                                                                        ),
-                                                                      );
-                                                                    },
-                                                                    child: const Text(
-                                                                        'Cadastrar Novo Usuário'),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            );
-                                                          }
-                                                        }
-                                                      },
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            right: 0,
-                                            top: 0,
-                                            child: IconButton(
-                                              icon: const Icon(Icons.close),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
+                                                );
                                               },
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                            );
+                                          );
+                                        }
+                                      }
+                                    },
+                                  ),
+                                ),
+                                [
+                                  SingleChildScrollView(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text('Cancelar'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) {
+                                                  return const AddUserPage(
+                                                    twoPop: true,
+                                                  );
+                                                },
+                                              ),
+                                            );
+                                          },
+                                          child: const Text('Cadastrar Novo'),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ]);
                           }
                         }
                       },
@@ -498,7 +450,6 @@ class BookDetailsPage extends StatelessWidget {
                         if (loans.any((loan) =>
                             loan.book.id == book.id &&
                             loan.endDateLoan == null)) {
-                          // ignore: use_build_context_synchronously
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -520,7 +471,6 @@ class BookDetailsPage extends StatelessWidget {
                         } else if (readings.any((reading) =>
                             reading.book.id == book.id &&
                             reading.endDateReading == null)) {
-                          // ignore: use_build_context_synchronously
                           showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -573,7 +523,6 @@ class BookDetailsPage extends StatelessWidget {
                                 );
                               });
                         } else {
-                          // ignore: use_build_context_synchronously
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
