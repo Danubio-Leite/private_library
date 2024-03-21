@@ -149,7 +149,7 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
                                               onPressed: () {
                                                 Navigator.pop(context);
                                               },
-                                              child: const Text('Close'),
+                                              child: const Text('Fechar'),
                                             ),
                                             if (loan.endDateLoan == null)
                                               TextButton(
@@ -159,60 +159,70 @@ class _BorrowedBooksPageState extends State<BorrowedBooksPage> {
                                                     builder: (context) {
                                                       return AlertDialog(
                                                         title: const Text(
-                                                            'Return book'),
+                                                            'Devolução de Livro'),
                                                         content: const Text(
-                                                            'Do you want to return the book?'),
+                                                            'Confirma que o livro foi devolvido?'),
                                                         actions: [
-                                                          TextButton(
-                                                            onPressed: () {
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            child: const Text(
-                                                                'Cancel'),
-                                                          ),
-                                                          TextButton(
-                                                            onPressed: () {
-                                                              loan.endDateLoan =
-                                                                  DateTime
-                                                                      .now();
-                                                              Provider.of<LoanDbHelper>(
-                                                                      context,
-                                                                      listen:
-                                                                          false)
-                                                                  .updateLoan(
-                                                                      loan);
-                                                              setState(() {});
-                                                              Navigator.pop(
-                                                                  context);
-                                                              Navigator.pop(
-                                                                  context);
-                                                              ScaffoldMessenger
-                                                                      .of(context)
-                                                                  .showSnackBar(
-                                                                SnackBar(
-                                                                  backgroundColor:
-                                                                      const Color
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceEvenly,
+                                                            children: [
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                                child: const Text(
+                                                                    'Cancelar'),
+                                                              ),
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  loan.endDateLoan =
+                                                                      DateTime
+                                                                          .now();
+                                                                  Provider.of<LoanDbHelper>(
+                                                                          context,
+                                                                          listen:
+                                                                              false)
+                                                                      .updateLoan(
+                                                                          loan);
+                                                                  setState(
+                                                                      () {});
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                  ScaffoldMessenger.of(
+                                                                          context)
+                                                                      .showSnackBar(
+                                                                    SnackBar(
+                                                                      backgroundColor: const Color
                                                                           .fromARGB(
                                                                           255,
                                                                           77,
                                                                           144,
                                                                           117),
-                                                                  content: Text(
-                                                                      'Registrada a devolução de ${loan.book.title}.'),
-                                                                ),
-                                                              );
-                                                            },
-                                                            child: const Text(
-                                                                'Return book'),
-                                                          )
+                                                                      content: Text(
+                                                                          'Registrada a devolução de ${loan.book.title}.'),
+                                                                    ),
+                                                                  );
+                                                                },
+                                                                child:
+                                                                    const Text(
+                                                                        'Sim'),
+                                                              )
+                                                            ],
+                                                          ),
                                                         ],
                                                       );
                                                     },
                                                   );
                                                 },
-                                                child:
-                                                    const Text('Return book'),
+                                                child: const Text(
+                                                    'Devolver Livro'),
                                               )
                                           ],
                                         ),

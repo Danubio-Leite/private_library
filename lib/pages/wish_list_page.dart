@@ -96,7 +96,7 @@ class WishListPage extends StatelessWidget {
                                           'Delete wish',
                                           wish,
                                           const Text(
-                                              'Are you sure you want to delete ?'),
+                                              'Tem certeza que deseja excluir?'),
                                           [
                                             Row(
                                               mainAxisAlignment:
@@ -106,7 +106,7 @@ class WishListPage extends StatelessWidget {
                                                   onPressed: () {
                                                     Navigator.pop(context);
                                                   },
-                                                  child: const Text('Cancel'),
+                                                  child: const Text('Cancelar'),
                                                 ),
                                                 TextButton(
                                                   onPressed: () {
@@ -125,7 +125,7 @@ class WishListPage extends StatelessWidget {
                                                       ),
                                                     );
                                                   },
-                                                  child: const Text('Delete'),
+                                                  child: const Text('Excluir'),
                                                 ),
                                               ],
                                             ),
@@ -168,18 +168,18 @@ class WishListPage extends StatelessWidget {
     final titleController = TextEditingController();
     final authorController = TextEditingController();
     return AlertDialog(
-      title: const Text('Add a wish'),
+      title: const Text('Adicionar livro à lista de desejos'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: titleController,
-              decoration: const InputDecoration(labelText: 'Title'),
+              decoration: const InputDecoration(labelText: 'Título'),
             ),
             TextField(
               controller: authorController,
-              decoration: const InputDecoration(labelText: 'Author'),
+              decoration: const InputDecoration(labelText: 'Autor'),
             ),
           ],
         ),
@@ -192,7 +192,7 @@ class WishListPage extends StatelessWidget {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Cancel'),
+              child: const Text('Cancelar'),
             ),
             TextButton(
               onPressed: () {
@@ -208,7 +208,7 @@ class WishListPage extends StatelessWidget {
 
                 Navigator.pop(context);
               },
-              child: const Text('Add'),
+              child: const Text('Adicionar'),
             )
           ],
         ),

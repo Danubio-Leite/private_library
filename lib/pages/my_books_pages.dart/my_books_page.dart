@@ -131,7 +131,7 @@ class _MyBooksPageState extends State<MyBooksPage> {
                     child: TextField(
                       controller: _searchController,
                       decoration: const InputDecoration(
-                        labelText: 'Search',
+                        labelText: 'Buscar',
                         suffixIcon: Icon(Icons.search),
                       ),
                     ),
