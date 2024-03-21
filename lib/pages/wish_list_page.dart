@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:private_library/components/custom_dialog.dart';
+import 'package:private_library/models/book_model.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -89,7 +91,46 @@ class WishListPage extends StatelessWidget {
                                         size: 18,
                                       ),
                                       onPressed: () {
-                                        dbHelper.deleteWish(wish.id);
+                                        customDialogBox(
+                                          context,
+                                          'Delete wish',
+                                          wish,
+                                          const Text(
+                                              'Are you sure you want to delete ?'),
+                                          [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text('Cancel'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    dbHelper
+                                                        .deleteWish(wish.id);
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                        backgroundColor:
+                                                            const Color
+                                                                .fromARGB(255,
+                                                                77, 144, 117),
+                                                        content: Text(
+                                                            '${wish.title} foi removido da sua lista de desejos.'),
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: const Text('Delete'),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        );
                                       },
                                     ),
                                   ],
@@ -144,27 +185,33 @@ class WishListPage extends StatelessWidget {
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () {
-            final dbHelper = Provider.of<WishDbHelper>(context, listen: false);
-            dbHelper.saveWish(
-              Wish(
-                id: DateTime.now().millisecondsSinceEpoch,
-                title: titleController.text,
-                author: authorController.text,
-              ),
-            );
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                final dbHelper =
+                    Provider.of<WishDbHelper>(context, listen: false);
+                dbHelper.saveWish(
+                  Wish(
+                    id: DateTime.now().millisecondsSinceEpoch,
+                    title: titleController.text,
+                    author: authorController.text,
+                  ),
+                );
 
-            Navigator.pop(context);
-          },
-          child: const Text('Add'),
-        )
+                Navigator.pop(context);
+              },
+              child: const Text('Add'),
+            )
+          ],
+        ),
       ],
     );
   }
