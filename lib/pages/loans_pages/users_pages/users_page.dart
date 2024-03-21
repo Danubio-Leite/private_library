@@ -305,7 +305,8 @@ class _UsersPageState extends State<UsersPage> {
                                               return AlertDialog(
                                                 insetPadding:
                                                     const EdgeInsets.all(16),
-                                                title: const Text(''),
+                                                title: const Text(
+                                                    'Confirmação de Exclusão'),
                                                 content: const Text(
                                                     'Você tem certeza que deseja excluir este usuário?'),
                                                 actions: [
@@ -347,6 +348,21 @@ class _UsersPageState extends State<UsersPage> {
                                                                   users[index]);
                                                           Navigator.of(context)
                                                               .pop();
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .showSnackBar(
+                                                            SnackBar(
+                                                              backgroundColor:
+                                                                  const Color
+                                                                      .fromARGB(
+                                                                      255,
+                                                                      77,
+                                                                      144,
+                                                                      117),
+                                                              content: Text(
+                                                                  '${users[index].name} foi removido da lista de usuários.'),
+                                                            ),
+                                                          );
                                                         },
                                                       ),
                                                     ],
