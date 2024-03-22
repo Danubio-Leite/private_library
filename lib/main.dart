@@ -12,11 +12,14 @@ import 'package:private_library/pages/wish_list_page.dart';
 import 'package:provider/provider.dart';
 import 'helpers/book_db_helper.dart';
 import 'helpers/loan_db_helper.dart';
+import 'helpers/preferences_db_helper.dart';
 import 'helpers/reading_db_helper.dart';
 import 'helpers/user_db_helper.dart';
 import 'i18n/app_localizations.dart';
 import 'pages/home_page.dart';
 import 'routes/routes.dart';
+import 'utils.dart';
+import 'pages/first_access_page.dart';
 
 void main() {
   runApp(
@@ -26,6 +29,8 @@ void main() {
         ChangeNotifierProvider<UserDbHelper>(create: (_) => UserDbHelper()),
         ChangeNotifierProvider<LoanDbHelper>(create: (_) => LoanDbHelper()),
         ChangeNotifierProvider<WishDbHelper>(create: (_) => WishDbHelper()),
+        // ChangeNotifierProvider<PreferencesDbHelper>(
+        //     create: (_) => PreferencesDbHelper()),
         ChangeNotifierProvider<ReadingDbHelper>(
             create: (_) => ReadingDbHelper()),
       ],
@@ -44,9 +49,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
-        AppLocalizations.delegate, // Add AppLocalizations delegate
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [
         Locale('en', ''), // English
@@ -71,7 +77,21 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       routes: {
-        Routes.HOME: (context) => const HomePage(),
+        Routes.FIRST_ACCESS: (context) => FirstAccessPage(),
+        Routes.HOME: (context) => FutureBuilder<bool>(
+              future: PreferencesService().isFirstAccess(),
+              builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else {
+                  if (snapshot.data == true) {
+                    return FirstAccessPage();
+                  } else {
+                    return const HomePage();
+                  }
+                }
+              },
+            ),
         Routes.ADD_BOOK: (context) => const AddBookPage(),
         Routes.MY_BOOKS: (context) => const MyBooksPage(),
         Routes.MY_READINGS: (context) => const MyReadingsPage(),

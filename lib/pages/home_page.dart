@@ -13,7 +13,8 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       // backgroundColor: const Color.fromARGB(255, 139, 107, 88),
       appBar: CustomAppBar(
-        title: Localizations.of(context, AppLocalizations).title,
+        title: 'Biblioteca\nLuz e Sabedoria',
+        imagePath: 'assets/images/logo/logo14.png',
       ),
       body: Stack(
         children: [
@@ -61,9 +62,10 @@ class HomePage extends StatelessWidget {
               CustomHomeButton(
                 imagePath: 'assets/images/icons/signage.png',
                 buttonText: Localizations.of(context, AppLocalizations).contact,
-                onPressed: () {
-                  Navigator.of(context).pushNamed(Routes.CONTACT);
-                },
+                onPressed: null,
+                // () {
+                //   Navigator.of(context).pushNamed(Routes.CONTACT);
+                // },
               ),
               CustomHomeButton(
                 imagePath: 'assets/images/icons/smartphone.png',
