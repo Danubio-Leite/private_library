@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -57,34 +59,62 @@ class _AddBookPageState extends State<AddBookPage> {
                 ScanMode.BARCODE,
               );
               isbnController.text = barcode;
-              final details = await fetchBookDetails(isbnController.text);
-              await fetchImageAndSave(isbnController.text);
-              if (details != null &&
-                  details['items'] != null &&
-                  details['items'].length > 0) {
-                var bookDetails = details['items'][0]['volumeInfo'];
-                if (bookDetails != null) {
-                  titleController.text = bookDetails['title'] ?? '';
-                  subtitleController.text = bookDetails['subtitle'] ?? '';
-                  authorController.text = bookDetails['authors'] != null
-                      ? bookDetails['authors'][0]
-                      : '';
-                  publisherController.text = bookDetails['publisher'] ?? '';
-                  genreController.text = bookDetails['categories'] != null
-                      ? bookDetails['categories'][0]
-                      : '';
-                  publishedDateController.text =
-                      bookDetails['publishedDate'] != null
-                          ? bookDetails['publishedDate'].substring(0, 4)
-                          : '';
-                  synopsisController.text = bookDetails['description'] ?? '';
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Informações do livro não encontradas.'),
+
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return const AlertDialog(
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 12),
+                        Text("Buscando detalhes do livro..."),
+                      ],
                     ),
                   );
+                },
+              );
+
+              try {
+                final details = await fetchBookDetails(isbnController.text);
+                await fetchImageAndSave(isbnController.text);
+                if (details != null &&
+                    details['items'] != null &&
+                    details['items'].length > 0) {
+                  var bookDetails = details['items'][0]['volumeInfo'];
+                  if (bookDetails != null) {
+                    titleController.text = bookDetails['title'] ?? '';
+                    subtitleController.text = bookDetails['subtitle'] ?? '';
+                    authorController.text = bookDetails['authors'] != null
+                        ? bookDetails['authors'][0]
+                        : '';
+                    publisherController.text = bookDetails['publisher'] ?? '';
+                    genreController.text = bookDetails['categories'] != null
+                        ? bookDetails['categories'][0]
+                        : '';
+                    publishedDateController.text =
+                        bookDetails['publishedDate'] != null
+                            ? bookDetails['publishedDate'].substring(0, 4)
+                            : '';
+                    synopsisController.text = bookDetails['description'] ?? '';
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Informações do livro não encontradas.'),
+                      ),
+                    );
+                  }
                 }
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Informações do livro não encontradas.'),
+                  ),
+                );
+              } finally {
+                Navigator.of(context).pop(); // Fecha o AlertDialog
               }
             },
             child: Image.asset(
@@ -127,42 +157,70 @@ class _AddBookPageState extends State<AddBookPage> {
                     CustomButton(
                       icon: Icons.search,
                       onPressed: () async {
-                        final details =
-                            await fetchBookDetails(isbnController.text);
-                        await fetchImageAndSave(isbnController.text);
-                        if (details != null &&
-                            details['items'] != null &&
-                            details['items'].length > 0) {
-                          var bookDetails = details['items'][0]['volumeInfo'];
-                          if (bookDetails != null) {
-                            titleController.text = bookDetails['title'] ?? '';
-                            subtitleController.text =
-                                bookDetails['subtitle'] ?? '';
-                            authorController.text =
-                                bookDetails['authors'] != null
-                                    ? bookDetails['authors'][0]
-                                    : '';
-                            publisherController.text =
-                                bookDetails['publisher'] ?? '';
-                            genreController.text =
-                                bookDetails['categories'] != null
-                                    ? bookDetails['categories'][0]
-                                    : '';
-                            publishedDateController.text =
-                                bookDetails['publishedDate'] != null
-                                    ? bookDetails['publishedDate']
-                                        .substring(0, 4)
-                                    : '';
-                            synopsisController.text =
-                                bookDetails['description'] ?? '';
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    'Informações do livro não encontradas.'),
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return const AlertDialog(
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  CircularProgressIndicator(),
+                                  SizedBox(height: 12),
+                                  Text("Buscando detalhes do livro..."),
+                                ],
                               ),
                             );
+                          },
+                        );
+
+                        try {
+                          final details =
+                              await fetchBookDetails(isbnController.text);
+                          await fetchImageAndSave(isbnController.text);
+                          if (details != null &&
+                              details['items'] != null &&
+                              details['items'].length > 0) {
+                            var bookDetails = details['items'][0]['volumeInfo'];
+                            if (bookDetails != null) {
+                              titleController.text = bookDetails['title'] ?? '';
+                              subtitleController.text =
+                                  bookDetails['subtitle'] ?? '';
+                              authorController.text =
+                                  bookDetails['authors'] != null
+                                      ? bookDetails['authors'][0]
+                                      : '';
+                              publisherController.text =
+                                  bookDetails['publisher'] ?? '';
+                              genreController.text =
+                                  bookDetails['categories'] != null
+                                      ? bookDetails['categories'][0]
+                                      : '';
+                              publishedDateController.text =
+                                  bookDetails['publishedDate'] != null
+                                      ? bookDetails['publishedDate']
+                                          .substring(0, 4)
+                                      : '';
+                              synopsisController.text =
+                                  bookDetails['description'] ?? '';
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'Informações do livro não encontradas.'),
+                                ),
+                              );
+                            }
                           }
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content:
+                                  Text('Informações do livro não encontradas.'),
+                            ),
+                          );
+                        } finally {
+                          Navigator.of(context).pop(); // Fecha o AlertDialog
                         }
                       },
                     ),

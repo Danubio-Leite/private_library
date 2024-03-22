@@ -30,6 +30,7 @@ dependencies:
   flutter_native_splash: 
   flutter_launcher_icons: 
   flutter_app_name: 
+  shared_preferences: 
   
 dev_dependencies:
   flutter_test:
@@ -43,7 +44,9 @@ flutter:
   uses-material-design: true
   assets:
    - assets/images/icons/
+   - assets/images/logo/
    - assets/images/
+
 
 flutter_native_splash:
   color: "#6D95A9"

@@ -7,4 +7,5 @@ class Routes {
   static const LOANS = '/loans';
   static const CONTACT = '/contact';
   static const ABOUT = '/about';
+  static const FIRST_ACCESS = '/first-access';
 }
