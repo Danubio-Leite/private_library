@@ -28,6 +28,10 @@ class PreferencesDbHelper extends ChangeNotifier {
     return _database!;
   }
 
+  Future<void> init() async {
+    _database = await _initDatabase();
+  }
+
   _initDatabase() async {
     String path = join(await getDatabasesPath(), _databaseName);
     return await openDatabase(path,

@@ -21,7 +21,9 @@ import 'routes/routes.dart';
 import 'utils.dart';
 import 'pages/first_access_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await PreferencesDbHelper().init();
   runApp(
     MultiProvider(
       providers: [
@@ -29,8 +31,8 @@ void main() {
         ChangeNotifierProvider<UserDbHelper>(create: (_) => UserDbHelper()),
         ChangeNotifierProvider<LoanDbHelper>(create: (_) => LoanDbHelper()),
         ChangeNotifierProvider<WishDbHelper>(create: (_) => WishDbHelper()),
-        // ChangeNotifierProvider<PreferencesDbHelper>(
-        //     create: (_) => PreferencesDbHelper()),
+        ChangeNotifierProvider<PreferencesDbHelper>(
+            create: (_) => PreferencesDbHelper()),
         ChangeNotifierProvider<ReadingDbHelper>(
             create: (_) => ReadingDbHelper()),
       ],
