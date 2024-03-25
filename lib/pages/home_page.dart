@@ -95,6 +95,13 @@ class HomePage extends StatelessWidget {
                         Navigator.of(context).pushNamed(Routes.ABOUT);
                       },
                     ),
+                    CustomHomeButton(
+                      imagePath: 'assets/images/icons/preferences.png',
+                      buttonText: 'Configurações',
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(Routes.PREFERENCES);
+                      },
+                    ),
                   ],
                 )
               ],

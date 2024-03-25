@@ -8,4 +8,5 @@ class Routes {
   static const CONTACT = '/contact';
   static const ABOUT = '/about';
   static const FIRST_ACCESS = '/first-access';
+  static const PREFERENCES = '/preferences';
 }

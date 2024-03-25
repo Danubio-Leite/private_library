@@ -8,6 +8,7 @@ import 'package:private_library/pages/contact.dart';
 import 'package:private_library/pages/loans_pages/loans_page.dart';
 import 'package:private_library/pages/my_%20readings_page.dart';
 import 'package:private_library/pages/my_books_pages.dart/my_books_page.dart';
+import 'package:private_library/pages/preferences.dart';
 import 'package:private_library/pages/wish_list_page.dart';
 import 'package:provider/provider.dart';
 import 'helpers/book_db_helper.dart';
@@ -101,6 +102,7 @@ class MyApp extends StatelessWidget {
         Routes.LOANS: (context) => const LoanPage(),
         Routes.CONTACT: (context) => const ContactPage(),
         Routes.ABOUT: (context) => const AboutAppPage(),
+        Routes.PREFERENCES: (context) => const PreferencesPage(),
       },
     );
   }
