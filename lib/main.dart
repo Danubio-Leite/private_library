@@ -8,6 +8,7 @@ import 'package:private_library/pages/contact.dart';
 import 'package:private_library/pages/loans_pages/loans_page.dart';
 import 'package:private_library/pages/my_%20readings_page.dart';
 import 'package:private_library/pages/my_books_pages.dart/my_books_page.dart';
+import 'package:private_library/pages/preferences.dart';
 import 'package:private_library/pages/wish_list_page.dart';
 import 'package:provider/provider.dart';
 import 'helpers/book_db_helper.dart';
@@ -21,7 +22,9 @@ import 'routes/routes.dart';
 import 'utils.dart';
 import 'pages/first_access_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await PreferencesDbHelper().init();
   runApp(
     MultiProvider(
       providers: [
@@ -29,8 +32,8 @@ void main() {
         ChangeNotifierProvider<UserDbHelper>(create: (_) => UserDbHelper()),
         ChangeNotifierProvider<LoanDbHelper>(create: (_) => LoanDbHelper()),
         ChangeNotifierProvider<WishDbHelper>(create: (_) => WishDbHelper()),
-        // ChangeNotifierProvider<PreferencesDbHelper>(
-        //     create: (_) => PreferencesDbHelper()),
+        ChangeNotifierProvider<PreferencesDbHelper>(
+            create: (_) => PreferencesDbHelper()),
         ChangeNotifierProvider<ReadingDbHelper>(
             create: (_) => ReadingDbHelper()),
       ],
@@ -99,6 +102,7 @@ class MyApp extends StatelessWidget {
         Routes.LOANS: (context) => const LoanPage(),
         Routes.CONTACT: (context) => const ContactPage(),
         Routes.ABOUT: (context) => const AboutAppPage(),
+        Routes.PREFERENCES: (context) => const PreferencesPage(),
       },
     );
   }
