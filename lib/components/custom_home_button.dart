@@ -5,14 +5,34 @@ class CustomHomeButton extends StatelessWidget {
   String imagePath;
   String buttonText;
   VoidCallback? onPressed;
+  String theme;
   CustomHomeButton(
       {super.key,
       required this.imagePath,
       required this.buttonText,
-      required this.onPressed});
+      required this.onPressed,
+      required this.theme});
 
   @override
   Widget build(BuildContext context) {
+    Color buttonColor;
+    switch (theme) {
+      case 'green':
+        buttonColor = const Color.fromARGB(255, 101, 171, 128);
+        break;
+      case 'default':
+        buttonColor = const Color.fromARGB(255, 109, 149, 169);
+        break;
+      case 'light':
+        buttonColor = const Color.fromARGB(255, 141, 199, 228);
+        break;
+      case 'flat':
+        buttonColor = const Color.fromARGB(255, 143, 142, 198);
+        break;
+      default:
+        buttonColor = const Color.fromARGB(255, 109, 149, 169);
+    }
+
     return Column(
       children: [
         Container(
@@ -24,7 +44,7 @@ class CustomHomeButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(2),
           ),
           child: Material(
-            color: const Color.fromARGB(255, 109, 149, 169),
+            color: buttonColor,
             borderRadius: BorderRadius.circular(2),
             child: InkWell(
               onTap: onPressed,

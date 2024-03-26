@@ -7,23 +7,41 @@ class CustomButton extends StatelessWidget {
   final Color? backgroundColor;
   final EdgeInsets? padding;
   final IconData? icon;
+  String theme;
 
-  const CustomButton({
-    Key? key,
+  CustomButton({
+    super.key,
     this.texto,
     required this.onPressed,
     this.backgroundColor,
     this.padding,
     this.icon,
-  }) : super(key: key);
+    required this.theme,
+  });
 
   @override
   Widget build(BuildContext context) {
+    Color buttonColor;
+    switch (theme) {
+      case 'green':
+        buttonColor = const Color.fromARGB(255, 101, 171, 128);
+        break;
+      case 'default':
+        buttonColor = const Color.fromARGB(255, 109, 149, 169);
+        break;
+      case 'light':
+        buttonColor = const Color.fromARGB(255, 141, 199, 228);
+        break;
+      case 'flat':
+        buttonColor = const Color.fromARGB(255, 143, 142, 198);
+        break;
+      default:
+        buttonColor = const Color.fromARGB(255, 109, 149, 169);
+    }
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor:
-            backgroundColor ?? const Color.fromARGB(255, 109, 149, 169),
+        backgroundColor: backgroundColor ?? buttonColor,
         padding: padding ?? const EdgeInsets.symmetric(vertical: 16),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
@@ -45,14 +63,6 @@ class CustomButton extends StatelessWidget {
                 color: Color.fromARGB(255, 53, 53, 53),
               ),
             ),
-
-      // Text(
-      //   texto,
-      //   style: const TextStyle(
-      //       fontSize: 16,
-      //       fontWeight: FontWeight.bold,
-      //       color: Color.fromARGB(255, 53, 53, 53)),
-      // ),
     );
   }
 }

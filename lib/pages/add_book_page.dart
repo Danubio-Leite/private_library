@@ -11,9 +11,11 @@ import 'package:provider/provider.dart';
 import '../components/custom_textformfield.dart';
 import 'package:http/http.dart' as http;
 import '../helpers/book_db_helper.dart';
+import '../helpers/preferences_db_helper.dart';
 import '../models/book_model.dart';
 import 'dart:ui' as ui;
 
+import '../models/preferences_model.dart';
 import '../routes/routes.dart';
 
 class AddBookPage extends StatefulWidget {
@@ -39,323 +41,354 @@ class _AddBookPageState extends State<AddBookPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-              elevation: 1,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6),
-              ),
-            ),
-            onPressed: () async {
-              String barcode = await FlutterBarcodeScanner.scanBarcode(
-                "#ff6666",
-                "Cancelar",
-                true,
-                ScanMode.BARCODE,
-              );
-              isbnController.text = barcode;
+    return FutureBuilder<List<Preferences>>(
+        future: Provider.of<PreferencesDbHelper>(context, listen: false)
+            .queryAllRows(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Erro: ${snapshot.error}');
+          } else {
+            Preferences preferences = snapshot.data!.first;
 
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return const AlertDialog(
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircularProgressIndicator(),
-                        SizedBox(height: 12),
-                        Text("Buscando detalhes do livro..."),
-                      ],
-                    ),
-                  );
-                },
-              );
-
-              try {
-                final details = await fetchBookDetails(isbnController.text);
-                await fetchImageAndSave(isbnController.text);
-                if (details != null &&
-                    details['items'] != null &&
-                    details['items'].length > 0) {
-                  var bookDetails = details['items'][0]['volumeInfo'];
-                  if (bookDetails != null) {
-                    titleController.text = bookDetails['title'] ?? '';
-                    subtitleController.text = bookDetails['subtitle'] ?? '';
-                    authorController.text = bookDetails['authors'] != null
-                        ? bookDetails['authors'][0]
-                        : '';
-                    publisherController.text = bookDetails['publisher'] ?? '';
-                    genreController.text = bookDetails['categories'] != null
-                        ? bookDetails['categories'][0]
-                        : '';
-                    publishedDateController.text =
-                        bookDetails['publishedDate'] != null
-                            ? bookDetails['publishedDate'].substring(0, 4)
-                            : '';
-                    synopsisController.text = bookDetails['description'] ?? '';
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Informações do livro não encontradas.'),
-                      ),
-                    );
-                  }
-                }
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Informações do livro não encontradas.'),
-                  ),
-                );
-              } finally {
-                Navigator.of(context).pop(); // Fecha o AlertDialog
-              }
-            },
-            child: Image.asset(
-              'assets/images/icons/barcode.png',
-              height: double.infinity,
-              fit: BoxFit.scaleDown,
-            ),
-          ),
-        ],
-        title: const Text('Adicionar Livro'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            // Teste de navegação com o pushReplacementNamed
-            Navigator.pushReplacementNamed(context, Routes.HOME);
-          },
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Flexible(
-                      flex: 2,
-                      child: CustomFormField(
-                        controller: isbnController,
-                        label: 'ISBN',
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        keyboardType: TextInputType.number,
+            return Scaffold(
+              appBar: AppBar(
+                actions: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      elevation: 1,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    CustomButton(
-                      icon: Icons.search,
-                      onPressed: () async {
-                        showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (BuildContext context) {
-                            return const AlertDialog(
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  CircularProgressIndicator(),
-                                  SizedBox(height: 12),
-                                  Text("Buscando detalhes do livro..."),
-                                ],
-                              ),
-                            );
-                          },
-                        );
+                    onPressed: () async {
+                      String barcode = await FlutterBarcodeScanner.scanBarcode(
+                        "#ff6666",
+                        "Cancelar",
+                        true,
+                        ScanMode.BARCODE,
+                      );
+                      isbnController.text = barcode;
 
-                        try {
-                          final details =
-                              await fetchBookDetails(isbnController.text);
-                          await fetchImageAndSave(isbnController.text);
-                          if (details != null &&
-                              details['items'] != null &&
-                              details['items'].length > 0) {
-                            var bookDetails = details['items'][0]['volumeInfo'];
-                            if (bookDetails != null) {
-                              titleController.text = bookDetails['title'] ?? '';
-                              subtitleController.text =
-                                  bookDetails['subtitle'] ?? '';
-                              authorController.text =
-                                  bookDetails['authors'] != null
-                                      ? bookDetails['authors'][0]
-                                      : '';
-                              publisherController.text =
-                                  bookDetails['publisher'] ?? '';
-                              genreController.text =
-                                  bookDetails['categories'] != null
-                                      ? bookDetails['categories'][0]
-                                      : '';
-                              publishedDateController.text =
-                                  bookDetails['publishedDate'] != null
-                                      ? bookDetails['publishedDate']
-                                          .substring(0, 4)
-                                      : '';
-                              synopsisController.text =
-                                  bookDetails['description'] ?? '';
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      'Informações do livro não encontradas.'),
-                                ),
-                              );
-                            }
-                          }
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content:
-                                  Text('Informações do livro não encontradas.'),
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return const AlertDialog(
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CircularProgressIndicator(),
+                                SizedBox(height: 12),
+                                Text("Buscando detalhes do livro..."),
+                              ],
                             ),
                           );
-                        } finally {
-                          Navigator.of(context).pop(); // Fecha o AlertDialog
-                        }
-                      },
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                CustomFormField(
-                  controller: titleController,
-                  label: 'Título',
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Campo obrigatório, insira o título da obra';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 8),
-                CustomFormField(
-                  controller: subtitleController,
-                  label: 'Subtítulo',
-                ),
-                const SizedBox(height: 8),
-                CustomFormField(
-                  controller: authorController,
-                  label: 'Autor',
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Campo obrigatório, insira o nome do autor';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 8),
-                CustomFormField(
-                  controller: publisherController,
-                  label: 'Editora',
-                ),
-                const SizedBox(height: 8),
-                CustomFormField(
-                  controller: genreController,
-                  label: 'Gênero',
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey, width: 1),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: DropdownButton<String>(
-                        value: dropdownValue,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            dropdownValue = newValue!;
-                          });
                         },
-                        items: <String>[
-                          'Físico',
-                          'Digital',
-                          'Audiobook',
-                          'Outro'
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        borderRadius: BorderRadius.circular(5),
-                        underline: const SizedBox(),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: CustomFormField(
-                        controller: publishedDateController,
-                        label: 'Ano de Publicação',
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                CustomFormField(
-                  controller: synopsisController,
-                  label: 'Sinopse',
-                  minLines: 1,
-                  maxLines: 5,
-                ),
-                const SizedBox(height: 8),
-                SizedBox(
-                  width: double.infinity,
-                  child: CustomButton(
-                    texto: 'Salvar',
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        String coverPath =
-                            await fetchImageAndSave(isbnController.text);
+                      );
 
-                        List<int> imageBytes =
-                            await File(coverPath).readAsBytesSync();
-
-                        // Codificando a lista de bytes em uma string base64
-                        String base64Image = base64Encode(imageBytes);
-                        final book = Book(
-                          id: DateTime.now().millisecondsSinceEpoch,
-                          isbn: isbnController.text,
-                          title: titleController.text,
-                          author: authorController.text,
-                          publisher: publisherController.text,
-                          genre: genreController.text,
-                          publishedDate: publishedDateController.text,
-                          synopsis: synopsisController.text,
-                          subtitle: subtitleController.text,
-                          cover: base64Image,
-                          format: dropdownValue,
+                      try {
+                        final details =
+                            await fetchBookDetails(isbnController.text);
+                        await fetchImageAndSave(isbnController.text);
+                        if (details != null &&
+                            details['items'] != null &&
+                            details['items'].length > 0) {
+                          var bookDetails = details['items'][0]['volumeInfo'];
+                          if (bookDetails != null) {
+                            titleController.text = bookDetails['title'] ?? '';
+                            subtitleController.text =
+                                bookDetails['subtitle'] ?? '';
+                            authorController.text =
+                                bookDetails['authors'] != null
+                                    ? bookDetails['authors'][0]
+                                    : '';
+                            publisherController.text =
+                                bookDetails['publisher'] ?? '';
+                            genreController.text =
+                                bookDetails['categories'] != null
+                                    ? bookDetails['categories'][0]
+                                    : '';
+                            publishedDateController.text =
+                                bookDetails['publishedDate'] != null
+                                    ? bookDetails['publishedDate']
+                                        .substring(0, 4)
+                                    : '';
+                            synopsisController.text =
+                                bookDetails['description'] ?? '';
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'Informações do livro não encontradas.'),
+                              ),
+                            );
+                          }
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content:
+                                Text('Informações do livro não encontradas.'),
+                          ),
                         );
-                        Provider.of<BookDbHelper>(context, listen: false)
-                            .saveBook(book);
-                        Navigator.pushReplacementNamed(context, Routes.HOME);
+                      } finally {
+                        Navigator.of(context).pop(); // Fecha o AlertDialog
                       }
                     },
+                    child: Image.asset(
+                      'assets/images/icons/barcode.png',
+                      height: double.infinity,
+                      fit: BoxFit.scaleDown,
+                    ),
                   ),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+                ],
+                title: const Text('Adicionar Livro'),
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () {
+                    // Teste de navegação com o pushReplacementNamed
+                    Navigator.pushReplacementNamed(context, Routes.HOME);
+                  },
+                ),
+              ),
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Flexible(
+                              flex: 2,
+                              child: CustomFormField(
+                                controller: isbnController,
+                                label: 'ISBN',
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                                keyboardType: TextInputType.number,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            CustomButton(
+                              theme: preferences.theme,
+                              icon: Icons.search,
+                              onPressed: () async {
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return const AlertDialog(
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          CircularProgressIndicator(),
+                                          SizedBox(height: 12),
+                                          Text("Buscando detalhes do livro..."),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+
+                                try {
+                                  final details = await fetchBookDetails(
+                                      isbnController.text);
+                                  await fetchImageAndSave(isbnController.text);
+                                  if (details != null &&
+                                      details['items'] != null &&
+                                      details['items'].length > 0) {
+                                    var bookDetails =
+                                        details['items'][0]['volumeInfo'];
+                                    if (bookDetails != null) {
+                                      titleController.text =
+                                          bookDetails['title'] ?? '';
+                                      subtitleController.text =
+                                          bookDetails['subtitle'] ?? '';
+                                      authorController.text =
+                                          bookDetails['authors'] != null
+                                              ? bookDetails['authors'][0]
+                                              : '';
+                                      publisherController.text =
+                                          bookDetails['publisher'] ?? '';
+                                      genreController.text =
+                                          bookDetails['categories'] != null
+                                              ? bookDetails['categories'][0]
+                                              : '';
+                                      publishedDateController.text =
+                                          bookDetails['publishedDate'] != null
+                                              ? bookDetails['publishedDate']
+                                                  .substring(0, 4)
+                                              : '';
+                                      synopsisController.text =
+                                          bookDetails['description'] ?? '';
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Informações do livro não encontradas.'),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Informações do livro não encontradas.'),
+                                    ),
+                                  );
+                                } finally {
+                                  Navigator.of(context)
+                                      .pop(); // Fecha o AlertDialog
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        CustomFormField(
+                          controller: titleController,
+                          label: 'Título',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Campo obrigatório, insira o título da obra';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        CustomFormField(
+                          controller: subtitleController,
+                          label: 'Subtítulo',
+                        ),
+                        const SizedBox(height: 8),
+                        CustomFormField(
+                          controller: authorController,
+                          label: 'Autor',
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Campo obrigatório, insira o nome do autor';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        CustomFormField(
+                          controller: publisherController,
+                          label: 'Editora',
+                        ),
+                        const SizedBox(height: 8),
+                        CustomFormField(
+                          controller: genreController,
+                          label: 'Gênero',
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.grey, width: 1),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: DropdownButton<String>(
+                                value: dropdownValue,
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    dropdownValue = newValue!;
+                                  });
+                                },
+                                items: <String>[
+                                  'Físico',
+                                  'Digital',
+                                  'Audiobook',
+                                  'Outro'
+                                ].map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                                borderRadius: BorderRadius.circular(5),
+                                underline: const SizedBox(),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: CustomFormField(
+                                controller: publishedDateController,
+                                label: 'Ano de Publicação',
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        CustomFormField(
+                          controller: synopsisController,
+                          label: 'Sinopse',
+                          minLines: 1,
+                          maxLines: 5,
+                        ),
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          width: double.infinity,
+                          child: CustomButton(
+                            theme: preferences.theme,
+                            texto: 'Salvar',
+                            onPressed: () async {
+                              if (_formKey.currentState!.validate()) {
+                                String coverPath = await fetchImageAndSave(
+                                    isbnController.text);
+
+                                List<int> imageBytes =
+                                    await File(coverPath).readAsBytesSync();
+
+                                // Codificando a lista de bytes em uma string base64
+                                String base64Image = base64Encode(imageBytes);
+                                final book = Book(
+                                  id: DateTime.now().millisecondsSinceEpoch,
+                                  isbn: isbnController.text,
+                                  title: titleController.text,
+                                  author: authorController.text,
+                                  publisher: publisherController.text,
+                                  genre: genreController.text,
+                                  publishedDate: publishedDateController.text,
+                                  synopsis: synopsisController.text,
+                                  subtitle: subtitleController.text,
+                                  cover: base64Image,
+                                  format: dropdownValue,
+                                );
+                                Provider.of<BookDbHelper>(context,
+                                        listen: false)
+                                    .saveBook(book);
+                                Navigator.pushReplacementNamed(
+                                    context, Routes.HOME);
+                              }
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+        });
   }
 
   Future<Map<String, dynamic>> fetchBookDetails(String isbn) async {

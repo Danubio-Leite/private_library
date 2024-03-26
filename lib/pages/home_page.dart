@@ -18,7 +18,7 @@ class HomePage extends StatelessWidget {
           .queryAllRows(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Text('Erro: ${snapshot.error}');
         } else {
@@ -26,10 +26,11 @@ class HomePage extends StatelessWidget {
           return Scaffold(
             appBar: CustomAppBar(
               title: 'Biblioteca\n${preferences.libraryName}',
-              imagePath:
-                  (preferences.logoPath == 'assets/images/logo/nologo.png')
-                      ? null
-                      : preferences.logoPath,
+              imagePath: (preferences.logoPath ==
+                      'assets/images/logo/default/nologo.png')
+                  ? null
+                  : preferences.logoPath,
+              theme: preferences.theme,
             ),
             body: Stack(
               children: [
@@ -39,7 +40,8 @@ class HomePage extends StatelessWidget {
                       left: 10, right: 10, top: 10, bottom: 72),
                   children: [
                     CustomHomeButton(
-                      imagePath: 'assets/images/icons/add-book.png',
+                      imagePath:
+                          'assets/images/icons/${preferences.theme}/add-book.png',
                       buttonText:
                           Localizations.of(context, AppLocalizations).addBook,
                       onPressed: () {
@@ -47,60 +49,76 @@ class HomePage extends StatelessWidget {
                         Navigator.pushReplacementNamed(
                             context, Routes.ADD_BOOK);
                       },
+                      theme: preferences.theme,
                     ),
                     CustomHomeButton(
-                      imagePath: 'assets/images/icons/bookshelf.png',
+                      imagePath:
+                          'assets/images/icons/${preferences.theme}/bookshelf.png',
                       buttonText:
                           Localizations.of(context, AppLocalizations).myBooks,
                       onPressed: () {
                         Navigator.of(context).pushNamed(Routes.MY_BOOKS);
                       },
+                      theme: preferences.theme,
                     ),
                     CustomHomeButton(
-                      imagePath: 'assets/images/icons/desk.png',
+                      imagePath:
+                          'assets/images/icons/${preferences.theme}/desk.png',
                       buttonText: 'Minhas Leituras',
                       onPressed: () {
                         Navigator.of(context).pushNamed(Routes.MY_READINGS);
                       },
+                      theme: preferences.theme,
                     ),
                     CustomHomeButton(
-                        imagePath: 'assets/images/icons/trolley.png',
-                        buttonText: Localizations.of(context, AppLocalizations)
-                            .wishList,
-                        onPressed: () {
-                          Navigator.of(context).pushNamed(Routes.WISH_LIST);
-                        }),
+                      imagePath:
+                          'assets/images/icons/${preferences.theme}/trolley.png',
+                      buttonText:
+                          Localizations.of(context, AppLocalizations).wishList,
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(Routes.WISH_LIST);
+                      },
+                      theme: preferences.theme,
+                    ),
                     CustomHomeButton(
-                      imagePath: 'assets/images/icons/hand-book.png',
+                      imagePath:
+                          'assets/images/icons/${preferences.theme}/hand-book.png',
                       buttonText:
                           Localizations.of(context, AppLocalizations).loans,
                       onPressed: () {
                         Navigator.of(context).pushNamed(Routes.LOANS);
                       },
+                      theme: preferences.theme,
                     ),
                     CustomHomeButton(
-                      imagePath: 'assets/images/icons/signage.png',
+                      imagePath:
+                          'assets/images/icons/${preferences.theme}/signage.png',
                       buttonText:
                           Localizations.of(context, AppLocalizations).contact,
                       onPressed: null,
+                      theme: preferences.theme,
                       // () {
                       //   Navigator.of(context).pushNamed(Routes.CONTACT);
                       // },
                     ),
                     CustomHomeButton(
-                      imagePath: 'assets/images/icons/smartphone.png',
+                      imagePath:
+                          'assets/images/icons/${preferences.theme}/smartphone.png',
                       buttonText:
                           Localizations.of(context, AppLocalizations).aboutApp,
                       onPressed: () {
                         Navigator.of(context).pushNamed(Routes.ABOUT);
                       },
+                      theme: preferences.theme,
                     ),
                     CustomHomeButton(
-                      imagePath: 'assets/images/icons/preferences.png',
+                      imagePath:
+                          'assets/images/icons/${preferences.theme}/preferences.png',
                       buttonText: 'Configurações',
                       onPressed: () {
                         Navigator.of(context).pushNamed(Routes.PREFERENCES);
                       },
+                      theme: preferences.theme,
                     ),
                   ],
                 )
