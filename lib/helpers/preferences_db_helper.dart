@@ -51,11 +51,11 @@ class PreferencesDbHelper extends ChangeNotifier {
           ''');
   }
 
-  // métodos Helper
-
   Future<int> insert(Preferences preferences) async {
     Database db = await _instance.database;
-    return await db.insert(table, preferences.toMap());
+    int id = await db.insert(table, preferences.toMap());
+    notifyListeners();
+    return id;
   }
 
   Future<List<Preferences>> queryAllRows() async {
@@ -68,12 +68,17 @@ class PreferencesDbHelper extends ChangeNotifier {
 
   Future<int> update(Preferences preferences) async {
     Database db = await _instance.database;
-    return await db.update(table, preferences.toMap(),
+    int id = await db.update(table, preferences.toMap(),
         where: '$columnId = ?', whereArgs: [preferences.id]);
+    notifyListeners();
+    return id;
   }
 
   Future<int> delete(int id) async {
     Database db = await _instance.database;
-    return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
+    int result =
+        await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
+    notifyListeners();
+    return result;
   }
 }

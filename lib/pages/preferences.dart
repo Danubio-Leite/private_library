@@ -71,6 +71,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                       child: SizedBox(
                         width: double.infinity,
                         child: CustomButton(
+                          theme: preferences.theme,
                           onPressed: () {
                             showDialog(
                               context: context,
@@ -135,6 +136,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                       child: SizedBox(
                         width: double.infinity,
                         child: CustomButton(
+                          theme: preferences.theme,
                           onPressed: () {
                             showDialog(
                               context: context,
@@ -198,6 +200,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                       child: SizedBox(
                         width: double.infinity,
                         child: CustomButton(
+                          theme: preferences.theme,
                           onPressed: () {
                             showDialog(
                               context: context,
@@ -304,6 +307,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                       child: SizedBox(
                         width: double.infinity,
                         child: CustomButton(
+                          theme: preferences.theme,
                           onPressed: () {
                             showDialog(
                               context: context,
@@ -326,15 +330,16 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                                       context,
                                                       listen: false)
                                                   .update(preferences);
-                                              Navigator.of(context).pop();
+                                              Navigator.pushReplacementNamed(
+                                                  context, Routes.HOME);
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(
                                                 const SnackBar(
                                                   backgroundColor:
                                                       Color.fromARGB(
-                                                          255, 101, 171, 128),
+                                                          255, 87, 163, 117),
                                                   content: Text(
-                                                    'Tema alterado para Verde!',
+                                                    'Tema alterado para Green!',
                                                     style: TextStyle(
                                                         color: Colors.black),
                                                   ),
@@ -381,13 +386,14 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                                       context,
                                                       listen: false)
                                                   .update(preferences);
-                                              Navigator.of(context).pop();
+                                              Navigator.pushReplacementNamed(
+                                                  context, Routes.HOME);
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(
                                                 const SnackBar(
                                                   backgroundColor:
                                                       Color.fromARGB(
-                                                          255, 109, 149, 169),
+                                                          255, 91, 141, 166),
                                                   content: Text(
                                                     'Tema alterado para Default!',
                                                     style: TextStyle(
@@ -436,13 +442,14 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                                       context,
                                                       listen: false)
                                                   .update(preferences);
-                                              Navigator.of(context).pop();
+                                              Navigator.pushReplacementNamed(
+                                                  context, Routes.HOME);
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(
                                                 const SnackBar(
                                                   backgroundColor:
                                                       Color.fromARGB(
-                                                          255, 141, 199, 228),
+                                                          255, 122, 173, 199),
                                                   content: Text(
                                                     'Tema alterado para Light!',
                                                     style: TextStyle(
@@ -491,13 +498,15 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                                       context,
                                                       listen: false)
                                                   .update(preferences);
-                                              Navigator.of(context).pop();
+                                              Navigator.pushReplacementNamed(
+                                                  context, Routes.HOME);
+
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(
                                                 const SnackBar(
                                                   backgroundColor:
                                                       Color.fromARGB(
-                                                          255, 143, 142, 198),
+                                                          255, 129, 129, 172),
                                                   content: Text(
                                                     'Tema alterado para Flat!',
                                                     style: TextStyle(

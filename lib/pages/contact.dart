@@ -2,9 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:provider/provider.dart';
 
 import '../components/custom_button.dart';
 import '../components/custom_textformfield.dart';
+import '../helpers/preferences_db_helper.dart';
+import '../models/preferences_model.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({super.key});
@@ -82,107 +85,121 @@ class _ContactPage extends State<ContactPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Sugestões',
-          style: TextStyle(
-            fontSize: MediaQuery.of(context).size.width * 0.05,
-          ),
-          overflow: TextOverflow.fade,
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                const Text(
-                  'Encontrou algum erro ou tem alguma sugestão de nova função? Nos envie!',
+    return FutureBuilder<List<Preferences>>(
+        future: Provider.of<PreferencesDbHelper>(context, listen: false)
+            .queryAllRows(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Erro: ${snapshot.error}');
+          } else {
+            Preferences preferences = snapshot.data!.first;
+
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  'Sugestões',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: MediaQuery.of(context).size.width * 0.05,
+                  ),
+                  overflow: TextOverflow.fade,
+                ),
+              ),
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        const Text(
+                          'Encontrou algum erro ou tem alguma sugestão de nova função? Nos envie!',
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        CustomFormField(
+                          label: 'Nome',
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Por favor, insira seu name';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            name = value;
+                          },
+                        ),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        CustomFormField(
+                          maskFormatter: MaskTextInputFormatter(
+                            mask: '(##) #####-####',
+                            filter: {"#": RegExp(r'[0-9]')},
+                          ),
+                          keyboardType: TextInputType.phone,
+                          label: 'Whatsapp (Opcional)',
+                          onSaved: (value) {
+                            phone = value;
+                          },
+                        ),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        CustomFormField(
+                          label: 'Email',
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Por favor, insira seu email';
+                            }
+                            if (!value.contains('@')) {
+                              return 'Por favor, insira um email válido';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            email = value;
+                          },
+                        ),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        CustomFormField(
+                          minLines: 1,
+                          maxLines: 5,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Por favor, insira sua sugestão';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            message = value;
+                          },
+                          label: 'Sugestão',
+                        ),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        CustomButton(
+                            theme: preferences.theme,
+                            texto: 'Enviar',
+                            onPressed: () {
+                              _enviarSugestao();
+                            }),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(
-                  height: 16,
-                ),
-                CustomFormField(
-                  label: 'Nome',
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Por favor, insira seu name';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    name = value;
-                  },
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                CustomFormField(
-                  maskFormatter: MaskTextInputFormatter(
-                    mask: '(##) #####-####',
-                    filter: {"#": RegExp(r'[0-9]')},
-                  ),
-                  keyboardType: TextInputType.phone,
-                  label: 'Whatsapp (Opcional)',
-                  onSaved: (value) {
-                    phone = value;
-                  },
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                CustomFormField(
-                  label: 'Email',
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Por favor, insira seu email';
-                    }
-                    if (!value.contains('@')) {
-                      return 'Por favor, insira um email válido';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    email = value;
-                  },
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                CustomFormField(
-                  minLines: 1,
-                  maxLines: 5,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Por favor, insira sua sugestão';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    message = value;
-                  },
-                  label: 'Sugestão',
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                CustomButton(
-                    texto: 'Enviar',
-                    onPressed: () {
-                      _enviarSugestao();
-                    }),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+              ),
+            );
+          }
+        });
   }
 }
