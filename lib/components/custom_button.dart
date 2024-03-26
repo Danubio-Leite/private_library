@@ -45,14 +45,6 @@ class CustomButton extends StatelessWidget {
                 color: Color.fromARGB(255, 53, 53, 53),
               ),
             ),
-
-      // Text(
-      //   texto,
-      //   style: const TextStyle(
-      //       fontSize: 16,
-      //       fontWeight: FontWeight.bold,
-      //       color: Color.fromARGB(255, 53, 53, 53)),
-      // ),
     );
   }
 }

@@ -43,9 +43,13 @@ flutter:
 
   uses-material-design: true
   assets:
-   - assets/images/icons/
    - assets/images/logo/
    - assets/images/
+   - assets/images/icons/
+   - assets/images/icons/green/
+   - assets/images/icons/default/
+   - assets/images/icons/light/
+   - assets/images/icons/flat/
 
 
 flutter_native_splash:
