@@ -55,14 +55,14 @@ class MyApp extends StatelessWidget {
               preferencesDbHelper.queryAllRows().then((value) => value.first),
           builder: (context, snapshot) {
             if (snapshot.connectionState != ConnectionState.done) {
-              // Return a loading indicator while waiting for the preferences
               return const CircularProgressIndicator();
             }
 
             final preferences = snapshot.data;
             final textTheme = Theme.of(context).textTheme;
             Color appBarColor;
-            switch (preferences!.theme) {
+            final theme = preferences?.theme ?? 'default';
+            switch (theme) {
               case 'green':
                 appBarColor = const Color.fromARGB(255, 101, 171, 128);
                 break;

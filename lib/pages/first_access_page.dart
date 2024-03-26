@@ -4,6 +4,7 @@ import 'package:private_library/components/custom_textformfield.dart';
 import 'package:provider/provider.dart';
 import '../models/preferences_model.dart';
 import '../helpers/preferences_db_helper.dart';
+import '../routes/routes.dart';
 import '../utils.dart';
 import 'home_page.dart';
 
@@ -13,8 +14,6 @@ class FirstAccessPage extends StatefulWidget {
 }
 
 class _FirstAccessPageState extends State<FirstAccessPage> {
-  String libraryName = '';
-  String userName = '';
   String selectedLogo = 'assets/images/logo/nologo.png';
   final TextEditingController libraryNameController = TextEditingController();
   final TextEditingController userNameController = TextEditingController();
@@ -48,10 +47,21 @@ class _FirstAccessPageState extends State<FirstAccessPage> {
           } else if (snapshot.hasError) {
             return Text('Erro: ${snapshot.error}');
           } else {
-            Preferences preferences = snapshot.data!.first;
+            Preferences preferences = snapshot.data?.isEmpty ?? true
+                ? Preferences(
+                    id: 001,
+                    libraryName: '',
+                    userName: '',
+                    theme: 'default',
+                    logoPath: 'assets/images/logo/nologo.png',
+                    language: 'pt',
+                  )
+                : snapshot.data!.first;
 
             return Scaffold(
-              appBar: AppBar(title: const Text('Bem Vindo')),
+              appBar: AppBar(
+                title: const Text('Bem Vindo'),
+              ),
               body: SingleChildScrollView(
                 child: Column(
                   children: [
@@ -67,11 +77,6 @@ class _FirstAccessPageState extends State<FirstAccessPage> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CustomFormField(
-                        onChanged: (libraryNameController) {
-                          setState(() {
-                            libraryName = libraryNameController;
-                          });
-                        },
                         label: 'Dê um nome para sua Biblioteca',
                         controller: libraryNameController,
                       ),
@@ -79,11 +84,6 @@ class _FirstAccessPageState extends State<FirstAccessPage> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CustomFormField(
-                        onChanged: (userNameController) {
-                          setState(() {
-                            userName = userNameController;
-                          });
-                        },
                         label: 'Qual seu nome?',
                         controller: userNameController,
                       ),
@@ -166,8 +166,8 @@ class _FirstAccessPageState extends State<FirstAccessPage> {
                           onPressed: () async {
                             Preferences preferences = Preferences(
                               id: 001,
-                              libraryName: libraryName,
-                              userName: userName,
+                              libraryName: libraryNameController.text,
+                              userName: userNameController.text,
                               logoPath: selectedLogo,
                               theme: 'default',
                               language: 'pt',
@@ -178,12 +178,16 @@ class _FirstAccessPageState extends State<FirstAccessPage> {
                                 .insert(preferences);
 
                             await PreferencesService().setFirstAccess();
-
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const HomePage()),
-                            );
+                            Future.delayed(const Duration(milliseconds: 500),
+                                () {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const HomePage(),
+                                ),
+                                (Route<dynamic> route) => false,
+                              );
+                            });
                           },
                           texto: 'Confirmar',
                         ),
