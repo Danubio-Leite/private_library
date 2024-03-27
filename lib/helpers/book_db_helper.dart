@@ -1,4 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share/share.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
 import '../models/book_model.dart';
@@ -114,6 +120,51 @@ class BookDbHelper extends ChangeNotifier {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+
+  Future<void> exportBooksToJson() async {
+    List<Book> books = await getBooks();
+    print(
+        'Books fetched: ${books.length}'); // Imprime o número de livros buscados
+
+    String jsonBooks = jsonEncode(books.map((book) => book.toMap()).toList());
+
+    // Obtenha o diretório de documentos do aplicativo
+    Directory directory = await getApplicationDocumentsDirectory();
+    String path = directory.path;
+    print('Directory path: $path'); // Imprime o caminho do diretório
+
+    // Crie um arquivo no diretório de documentos
+    File file = File('$path/books.json');
+    await file.writeAsString(jsonBooks);
+    print('File written: ${file.path}'); // Imprime o caminho do arquivo
+
+    // Compartilhe o arquivo
+    Share.shareFiles([file.path], text: 'Arquivo de backup dos livros');
+  }
+
+  Future<void> importBooksFromJson() async {
+    // Deixe o usuário escolher o arquivo para importar
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['json'],
+    );
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      String jsonBooks = await file.readAsString();
+      List<dynamic> list = jsonDecode(jsonBooks);
+
+      // Obtenha todos os livros existentes e exclua-os
+      List<Book> existingBooks = await getBooks();
+      await deleteBooks(existingBooks);
+
+      // Agora insira os novos livros do arquivo JSON
+      for (var item in list) {
+        Book book = Book.fromMap(item);
+        await saveBook(book);
+      }
+    }
   }
 
   Future<void> deleteBooks(List<Book> books) async {

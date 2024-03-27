@@ -103,20 +103,20 @@ class HomePage extends StatelessWidget {
                     ),
                     CustomHomeButton(
                       imagePath:
-                          'assets/images/icons/${preferences.theme}/smartphone.png',
-                      buttonText:
-                          Localizations.of(context, AppLocalizations).aboutApp,
+                          'assets/images/icons/${preferences.theme}/preferences.png',
+                      buttonText: 'Configurações',
                       onPressed: () {
-                        Navigator.of(context).pushNamed(Routes.ABOUT);
+                        Navigator.of(context).pushNamed(Routes.PREFERENCES);
                       },
                       theme: preferences.theme,
                     ),
                     CustomHomeButton(
                       imagePath:
-                          'assets/images/icons/${preferences.theme}/preferences.png',
-                      buttonText: 'Configurações',
+                          'assets/images/icons/${preferences.theme}/smartphone.png',
+                      buttonText:
+                          Localizations.of(context, AppLocalizations).aboutApp,
                       onPressed: () {
-                        Navigator.of(context).pushNamed(Routes.PREFERENCES);
+                        Navigator.of(context).pushNamed(Routes.ABOUT);
                       },
                       theme: preferences.theme,
                     ),

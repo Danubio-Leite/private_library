@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../components/custom_home_button.dart';
 import '../components/logo_selector.dart';
+import '../helpers/book_db_helper.dart';
 import '../helpers/preferences_db_helper.dart';
 import '../models/preferences_model.dart';
 import '../routes/routes.dart';
@@ -64,7 +65,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
 
           return Scaffold(
               appBar: AppBar(
-                title: const Text('Preferências'),
+                title: const Text('Configurações'),
                 leading: IconButton(
                   onPressed: () {
                     Navigator.of(context).pushNamed(Routes.HOME);
@@ -535,6 +536,126 @@ class _PreferencesPageState extends State<PreferencesPage> {
                             );
                           },
                           texto: 'Alterar Tema',
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: CustomButton(
+                          theme: preferences.theme,
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Backup de Dados'),
+                                  content: SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.3,
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: SizedBox(
+                                            width: double.infinity,
+                                            child: CustomButton(
+                                              theme: preferences.theme,
+                                              onPressed: () async {
+                                                await Provider.of<BookDbHelper>(
+                                                        context,
+                                                        listen: false)
+                                                    .exportBooksToJson();
+                                              },
+                                              texto: 'Exportar Livros',
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: SizedBox(
+                                            width: double.infinity,
+                                            child: CustomButton(
+                                              theme: preferences.theme,
+                                              onPressed: () async {
+                                                await Provider.of<BookDbHelper>(
+                                                        context,
+                                                        listen: false)
+                                                    .importBooksFromJson();
+
+                                                Navigator.of(context).pop();
+
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    backgroundColor: preferences
+                                                                .theme ==
+                                                            'green'
+                                                        ? const Color.fromARGB(
+                                                            255, 87, 163, 117)
+                                                        : preferences.theme ==
+                                                                'default'
+                                                            ? const Color.fromARGB(
+                                                                255,
+                                                                91,
+                                                                141,
+                                                                166)
+                                                            : preferences.theme ==
+                                                                    'light'
+                                                                ? const Color.fromARGB(
+                                                                    255,
+                                                                    122,
+                                                                    173,
+                                                                    199)
+                                                                : preferences.theme ==
+                                                                        'flat'
+                                                                    ? const Color
+                                                                        .fromARGB(
+                                                                        255,
+                                                                        129,
+                                                                        129,
+                                                                        172)
+                                                                    : const Color
+                                                                        .fromARGB(
+                                                                        255,
+                                                                        109,
+                                                                        149,
+                                                                        169),
+                                                    content: const Text(
+                                                      'Livros importados com sucesso!',
+                                                      style: TextStyle(
+                                                          color: Colors.black),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              texto: 'Importar Livros',
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text('Cancelar'),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          texto: 'Backup de Dados',
                         ),
                       ),
                     ),

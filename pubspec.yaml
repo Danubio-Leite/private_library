@@ -2,7 +2,7 @@ name: private_library
 description: "Biblioteca pessoal."
 publish_to: 'none' 
 
-version: 1.0.0+3
+version: 1.0.0+4
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
@@ -31,6 +31,8 @@ dependencies:
   flutter_launcher_icons: 
   flutter_app_name: 
   shared_preferences: 
+  file_picker: ^8.0.0+1
+  share:
   
 dev_dependencies:
   flutter_test:
