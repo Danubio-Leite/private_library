@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
             final preferences = snapshot.data;
             final textTheme = Theme.of(context).textTheme;
             Color appBarColor;
-            final theme = preferences?.theme ?? 'default';
+            final theme = preferences?.theme ?? 'green';
             switch (theme) {
               case 'green':
                 appBarColor = const Color.fromARGB(255, 101, 171, 128);

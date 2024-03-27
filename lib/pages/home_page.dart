@@ -26,10 +26,10 @@ class HomePage extends StatelessWidget {
           return Scaffold(
             appBar: CustomAppBar(
               title: 'Biblioteca\n${preferences.libraryName}',
-              imagePath: (preferences.logoPath ==
-                      'assets/images/logo/default/nologo.png')
-                  ? null
-                  : preferences.logoPath,
+              imagePath:
+                  (preferences.logoPath == 'assets/images/logo/nologo.png')
+                      ? null
+                      : preferences.logoPath,
               theme: preferences.theme,
             ),
             body: Stack(

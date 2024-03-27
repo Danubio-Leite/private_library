@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:private_library/components/custom_button.dart';
 import 'package:private_library/components/custom_textformfield.dart';
@@ -17,6 +18,14 @@ class _FirstAccessPageState extends State<FirstAccessPage> {
   String selectedLogo = 'assets/images/logo/nologo.png';
   final TextEditingController libraryNameController = TextEditingController();
   final TextEditingController userNameController = TextEditingController();
+  Future<List<Preferences>>? preferencesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    preferencesFuture =
+        Provider.of<PreferencesDbHelper>(context, listen: false).queryAllRows();
+  }
 
   final logos = [
     'assets/images/logo/logo01.png',
@@ -39,8 +48,7 @@ class _FirstAccessPageState extends State<FirstAccessPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Preferences>>(
-        future: Provider.of<PreferencesDbHelper>(context, listen: false)
-            .queryAllRows(),
+        future: preferencesFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
@@ -52,7 +60,7 @@ class _FirstAccessPageState extends State<FirstAccessPage> {
                     id: 001,
                     libraryName: '',
                     userName: '',
-                    theme: 'default',
+                    theme: 'green',
                     logoPath: 'assets/images/logo/nologo.png',
                     language: 'pt',
                   )
@@ -93,7 +101,7 @@ class _FirstAccessPageState extends State<FirstAccessPage> {
                         const Padding(
                           padding: EdgeInsets.only(top: 8.0),
                           child: Text(
-                            'Selecione um Logo para a Biblioteca:',
+                            'Selecione uma logo para a Biblioteca:',
                             style: TextStyle(
                               fontSize: 16,
                             ),
@@ -110,45 +118,39 @@ class _FirstAccessPageState extends State<FirstAccessPage> {
                               crossAxisCount: 3,
                             ),
                             itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    selectedLogo = logos[index];
-                                  });
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(6.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(6.0),
-                                      border: Border.all(
-                                        color: selectedLogo == logos[index]
-                                            ? Colors.blueGrey
-                                            : Colors.transparent,
-                                        width: 2.0,
-                                      ),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(6.0),
-                                      child: index == logos.length - 1
-                                          ? Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Flexible(
-                                                  child: Image.asset(
-                                                    logos[index],
-                                                  ),
+                              return Card(
+                                color: selectedLogo == logos[index]
+                                    ? Colors.blueGrey
+                                    : Colors.white70,
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      selectedLogo = logos[index];
+                                    });
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: index == logos.length - 1
+                                        ? Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Flexible(
+                                                flex: 2,
+                                                child: Image.asset(
+                                                  logos[index],
                                                 ),
-                                                const Center(
-                                                    child: Text('Sem Logo')),
-                                              ],
-                                            )
-                                          : Image.asset(
-                                              logos[index],
-                                            ),
-                                    ),
+                                              ),
+                                              const Flexible(
+                                                child: Center(
+                                                    child: AutoSizeText(
+                                                        'Sem Logo')),
+                                              ),
+                                            ],
+                                          )
+                                        : Image.asset(
+                                            logos[index],
+                                          ),
                                   ),
                                 ),
                               );
@@ -169,7 +171,7 @@ class _FirstAccessPageState extends State<FirstAccessPage> {
                               libraryName: libraryNameController.text,
                               userName: userNameController.text,
                               logoPath: selectedLogo,
-                              theme: 'default',
+                              theme: 'green',
                               language: 'pt',
                             );
 
@@ -178,8 +180,8 @@ class _FirstAccessPageState extends State<FirstAccessPage> {
                                 .insert(preferences);
 
                             await PreferencesService().setFirstAccess();
-                            Future.delayed(const Duration(milliseconds: 500),
-                                () {
+
+                            if (mounted) {
                               Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
@@ -187,7 +189,7 @@ class _FirstAccessPageState extends State<FirstAccessPage> {
                                 ),
                                 (Route<dynamic> route) => false,
                               );
-                            });
+                            }
                           },
                           texto: 'Confirmar',
                         ),

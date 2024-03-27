@@ -4,6 +4,7 @@ import 'package:private_library/components/custom_button.dart';
 import 'package:provider/provider.dart';
 
 import '../components/custom_home_button.dart';
+import '../components/logo_selector.dart';
 import '../helpers/preferences_db_helper.dart';
 import '../models/preferences_model.dart';
 import '../routes/routes.dart';
@@ -16,6 +17,13 @@ class PreferencesPage extends StatefulWidget {
 }
 
 class _PreferencesPageState extends State<PreferencesPage> {
+  late ValueNotifier<String?> selectedLogoNotifier;
+  @override
+  void initState() {
+    super.initState();
+    selectedLogoNotifier = ValueNotifier<String?>(null);
+  }
+
   @override
   Widget build(BuildContext context) {
     final TextEditingController libraryNameController = TextEditingController();
@@ -51,6 +59,8 @@ class _PreferencesPageState extends State<PreferencesPage> {
           Preferences preferences = snapshot.data!.first;
           libraryNameController.text = preferences.libraryName;
           userNameController.text = preferences.userName;
+          selectedLogoNotifier.value =
+              selectedLogoNotifier.value ?? preferences.logoPath;
 
           return Scaffold(
               appBar: AppBar(
@@ -63,7 +73,6 @@ class _PreferencesPageState extends State<PreferencesPage> {
                 ),
               ),
               body: SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
                 child: Column(
                   children: [
                     Padding(
@@ -208,38 +217,33 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                 return AlertDialog(
                                   title: const Text('Selecione a Logo:'),
                                   content: SizedBox(
-                                    height: double.infinity,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.5,
                                     width: double.infinity,
                                     child: Scrollbar(
-                                      child: GridView.builder(
-                                        // physics:
-                                        //     const NeverScrollableScrollPhysics(),
-                                        shrinkWrap: true,
-                                        itemCount: logos.length,
-                                        gridDelegate:
-                                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                        ),
-                                        itemBuilder: (context, index) {
-                                          return Padding(
-                                            padding: const EdgeInsets.all(6.0),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(6.0),
-                                                border: Border.all(
-                                                  color: preferences.logoPath ==
-                                                          logos[index]
-                                                      ? Colors.blueGrey
-                                                      : Colors.transparent,
-                                                  width: 2.0,
-                                                ),
-                                              ),
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          children: [
+                                            LogoSelector(
+                                              logos: logos,
+                                              selectedLogo:
+                                                  selectedLogoNotifier.value,
+                                              onLogoSelected: (logo) {
+                                                selectedLogoNotifier.value =
+                                                    logo;
+                                              },
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: SizedBox(
+                                                width: double.infinity,
+                                                child: CustomButton(
+                                                  theme: preferences.theme,
+                                                  onPressed: () {
                                                     preferences.logoPath =
-                                                        logos[index];
+                                                        selectedLogoNotifier
+                                                            .value;
                                                     Provider.of<PreferencesDbHelper>(
                                                             context,
                                                             listen: false)
@@ -260,37 +264,13 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                                         ),
                                                       ),
                                                     );
-                                                  });
-                                                },
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(6.0),
-                                                  child: index ==
-                                                          logos.length - 1
-                                                      ? Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Flexible(
-                                                              child:
-                                                                  Image.asset(
-                                                                logos[index],
-                                                              ),
-                                                            ),
-                                                            const Center(
-                                                                child: Text(
-                                                                    'Sem Logo')),
-                                                          ],
-                                                        )
-                                                      : Image.asset(
-                                                          logos[index],
-                                                        ),
+                                                  },
+                                                  texto: 'Salvar',
                                                 ),
                                               ),
                                             ),
-                                          );
-                                        },
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -315,7 +295,8 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                 return AlertDialog(
                                   title: const Text('Escolha um tema:'),
                                   content: SizedBox(
-                                    height: double.infinity,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.4,
                                     width: double.infinity,
                                     child: Scrollbar(
                                         child: GridView.count(
@@ -563,5 +544,11 @@ class _PreferencesPageState extends State<PreferencesPage> {
         }
       },
     );
+  }
+
+  @override
+  void dispose() {
+    selectedLogoNotifier.dispose();
+    super.dispose();
   }
 }
